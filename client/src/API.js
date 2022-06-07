@@ -26,6 +26,17 @@ async function getAllIncompatibilities() {
     }
 }
 
+async function getStudyPlan() {
+    // call: GET /api/exams
+    const response = await fetch(new URL('studyplan', APIURL), { credentials: 'include' });
+    const studyPlanJson = await response.json();
+    if (response.ok) {
+        return studyPlanJson.map();
+    } else {
+        throw studyPlanJson;  // an object with the error coming from the server
+    }
+}
+
 /* USER login API */
 
 async function login(credentials) {

@@ -29,8 +29,8 @@
 
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
+- `MainComponent` (in `CourseComponents.js`): acts as a wrapper for the main page, rendering the available university courses table
+- `CoursesTable` (in `CourseComponents.js`): table rendering all the courses available, with the possibility to be expanded to show propedeutic and incompatible courses
 - ...
 
 (only _main_ components, minor ones may be skipped)

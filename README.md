@@ -30,6 +30,14 @@
     ...
     ]
     ```
+- GET `/api/studyplan`
+  - Description: Returns the study plan for the current user.
+  - Request body: _None_
+  - Response: `200 OK` (successo) o `500 Internal Server Error` (generic error).
+  - Response body: an array of all course codes in the study plan for the current user.
+    ```
+    [...]
+    ```
 - DELETE `/api/sessions/current`
   - Description: Esegue il logout dell'utente attualmente connesso.
   - Request body: _None_

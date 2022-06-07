@@ -94,6 +94,16 @@ app.get('/api/incompatibilities', (req, res) => {
         });
 });
 
+app.get('/api/studyplan', isLoggedIn, async (req, res) => {
+    try {
+        const studyPlan = await dao.listStudyPlan(req.user.id);
+        setTimeout(() => res.json(studyPlan), 1000);
+    } catch {
+        console.log(err);
+        res.status(500).json({ error: "Database error while retrieving courses incompatibilities" }).end()
+    }
+});
+
 /** Users APIs **/
 
 // POST /sessions 

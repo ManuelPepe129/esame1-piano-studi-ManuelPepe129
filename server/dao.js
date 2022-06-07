@@ -34,9 +34,27 @@ exports.listIncompatibilities = () => {
             if (err) {
                 reject(err);
             } else {
-                const incompatibilities = rows.map(row => ({coursea:row.coursea, courseb:row.courseb}));
+                const incompatibilities = rows.map(row => ({ coursea: row.coursea, courseb: row.courseb }));
                 resolve(incompatibilities);
             }
         })
+    })
+}
+
+//get study plan for current loggedin user
+exports.listStudyPlan = (userId) => {
+    return new Promise((resolve, reject) => {
+        // const sql = "SELECT * FROM courses ORDER BY code";
+        const sql = `SELECT course FROM studyplans WHERE userid=?`;
+        db.all(sql, [userId], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            else {
+                const studyplan = rows;
+                resolve(studyplan);
+            }
+        });
     })
 }

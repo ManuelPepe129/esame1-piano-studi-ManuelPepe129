@@ -1,4 +1,4 @@
-# Exam #12345: "Exam Title"
+# Exam #12345: "Piano degli Studi"
 ## Student: s281221 Pepe Manuel 
 
 ## React Client Application Routes
@@ -22,9 +22,10 @@
 
 ## Database Tables
 
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
-- ...
+- Table `users` - contains id name mail password salt
+- Table `studyplans` - contains userid course
+- Table `courses` - contains code name credits propedeuticcourse maxstudentsenrolled
+- Table `incompatibilities` - contains coursea course b
 
 ## Main React Components
 

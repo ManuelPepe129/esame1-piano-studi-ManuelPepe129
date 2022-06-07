@@ -3,8 +3,8 @@
 
 ## React Client Application Routes
 
-- Route `/`: page content and purpose
-- Route `/something/:param`: page content and purpose, param specification
+- Route `/`: home page with the list of available courses
+- Route `/login`: login page
 - ...
 
 ## API Server

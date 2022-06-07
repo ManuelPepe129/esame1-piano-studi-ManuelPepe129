@@ -9,16 +9,51 @@
 
 ## API Server
 
-- POST `/api/login`
-  - request parameters and request body content
-  - response body content
-- GET `/api/something`
-  - request parameters
-  - response body content
-- POST `/api/something`
-  - request parameters and request body content
-  - response body content
-- ...
+
+- GET `/api/courses`
+  - Description: Restituisce tutti i corsi messi a disposizione dall'università.
+  - Request body: _None_
+  - Response: `200 OK` (successo) o `500 Internal Server Error` (generic error).
+  - Response body: Un array di oggetti, ogni oggetto descrive un corso.
+    ```
+    [{
+        "code": "01TYMOV",
+        "name": " Information systems security ",
+        "credits": 6,
+        "propedeuticcourse": ,
+        "maxstudentsenrolled":
+    }, {
+        "code": "02LSEOV",
+        "name": " Computer architectures ",
+        "CFU": 10
+    },
+    ...
+    ]
+    ```
+- DELETE `/api/sessions/current`
+  - Description: Esegue il logout dell'utente attualmente connesso.
+  - Request body: _None_
+  - Response: `200 OK` (successo) o `401 Internal Server Error` (generic error).
+  - Response body: _None_.
+- POST `/api/sessions`
+  - Description: Crea una nuova sessione.
+  - Request body: _None_
+  - Response: `200 OK` (successo) o `401 Internal Server Error` (generic error).
+  - Response body: Dati dell'utente appena connesso.
+    ```
+    {
+        "code": "01TYMOV",
+        "name": " Information systems security ",
+        "credits": 6,
+        "propedeuticcourse": ,
+        "maxstudentsenrolled":
+    }
+    ```
+- GET `/api/sessions/current`
+  - Description: Controlla che sia avvenuto il login.
+  - Request body: _None_
+  - Response: `200 OK` (successo) o `401 Internal Server Error` (generic error).
+  - Response body: _None_
 
 ## Database Tables
 

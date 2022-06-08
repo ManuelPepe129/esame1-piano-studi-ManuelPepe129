@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Container, Col, Row, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Table, Container, Col, Row, Button} from 'react-bootstrap';
 import { CaretDown, CaretUp } from 'react-bootstrap-icons';
 import { useState } from 'react';
 
@@ -78,9 +78,7 @@ function CourseRow(props) {
         <>
             <tr>
                 <CourseData course={props.course} />
-                <td>
-                    <Button onClick={() => { toggleDisplayDetails(); }}>{displayDetails ? <CaretUp /> : <CaretDown />}</Button>
-                </td>
+                <CourseActions toggleDisplayDetails={toggleDisplayDetails} displayDetails={displayDetails}/>
             </tr>
             {
                 displayDetails ?
@@ -88,6 +86,14 @@ function CourseRow(props) {
                     : false
             }
         </>
+    );
+}
+
+function CourseActions(props) {
+    return(
+    <td>
+        <Button onClick={() => { props.toggleDisplayDetails(); }}>{props.displayDetails ? <CaretUp /> : <CaretDown />}</Button>
+    </td>
     );
 }
 
@@ -108,7 +114,7 @@ function CourseDetails(props) {
         let str = '';
         for (let i = 0; i < props.incompatibilities.length; i++) {
             str += props.incompatibilities[i];
-            if (i != props.incompatibilities.length - 1) {
+            if (i !== props.incompatibilities.length - 1) {
                 str += ", ";
             }
         }

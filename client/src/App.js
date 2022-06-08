@@ -2,10 +2,12 @@ import './App.css';
 
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { MainComponent } from './CourseComponents';
-import { LoginForm, LogoutButton } from './LoginComponents';
-import API from './API';
 import { Container, Row, Col, Alert } from 'react-bootstrap';
+import API from './API';
+import { LoginForm, LogoutButton } from './LoginComponents';
+import { MainComponent } from './CourseComponents';
+import { StudyPlanOptionForm, StudyPlanTable } from './StudyPlanComponent';
+
 
 function App() {
   return (
@@ -44,6 +46,8 @@ function App2() {
         const user = await API.getUserInfo();
         setLoggedIn(true);
         setUser(user);
+        const studyPlan = await API.getStudyPlan();
+        setStudyPlan(getStudyPlanDetails(studyPlan));
       } catch (err) {
         handleError(err);
       }
@@ -58,9 +62,16 @@ function App2() {
         setUser(user);
         setMessage('');
         // navigate('/');
+        API.getStudyPlan()
+          .then(studyPlan => {
+            setStudyPlan(getStudyPlanDetails(studyPlan));
+          })
+          .catch(err => {
+            handleError(err);
+          })
       })
       .catch(err => {
-        setMessage(err);
+        handleError(err);
       }
       )
   }
@@ -69,6 +80,14 @@ function App2() {
     await API.logout();
     setLoggedIn(false);
     setUser({});
+    setStudyPlan([]);
+  }
+
+  const getStudyPlanDetails = (studyPlan_) => {
+    const courses_tmp = courses.filter(course => studyPlan_.find(c => c.course === course.code))
+      .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
+    console.log(`studyplandetails: ${courses_tmp}`);
+    return courses_tmp;
   }
 
 
@@ -85,14 +104,26 @@ function App2() {
 
       <Routes>
         <Route path='/' element={
-          loggedIn ? (
-            <MainComponent courses={courses} incompatibilities={incompatibilities} />) : <Navigate to='/login' />}
+          loggedIn ? (<>
+            <MainComponent courses={courses} incompatibilities={incompatibilities} /><StudyPlanTable courses={studyPlan} />
+          </>)
+            : <Navigate to='/login' />}
         />
         <Route path='/login' element={
           loggedIn ? <Navigate to='/' /> : <>
             <MainComponent courses={courses} incompatibilities={incompatibilities} />
             <LoginForm login={doLogin}></LoginForm>
           </>
+        } />
+        <Route path='/edit' element={
+          <StudyPlanOptionForm />
+        } />
+        <Route path='/studyplan' element={
+          loggedIn ? (
+            <>
+              <MainComponent courses={courses} incompatibilities={incompatibilities} />
+              <StudyPlanTable courses={courses} />
+            </>) : <Navigate to='/login' />
         } />
       </Routes>
     </>

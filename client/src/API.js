@@ -31,7 +31,7 @@ async function getStudyPlan() {
     const response = await fetch(new URL('studyplan', APIURL), { credentials: 'include' });
     const studyPlanJson = await response.json();
     if (response.ok) {
-        return studyPlanJson.map();
+        return studyPlanJson;
     } else {
         throw studyPlanJson;  // an object with the error coming from the server
     }
@@ -72,5 +72,5 @@ async function getUserInfo() {
 }
 
 
-const API = { getAllCourses, getAllIncompatibilities, login, logout, getUserInfo };
+const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, login, logout, getUserInfo };
 export default API;

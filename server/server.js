@@ -118,6 +118,17 @@ app.post('/api/studyplan', isLoggedIn, async (req, res) => {
     }
 });
 
+// DELETE /api/studyplan
+app.delete('/api/studyplan', isLoggedIn, async (req, res) => {
+    try {
+        await dao.deleteStudyPlan(req.user.id);
+        res.status(204).end();
+    } catch (err) {
+        console.log(err);
+        res.status(503).json({ error: `Database error during the deletion of studyplan.` });
+    }
+});
+
 /** Users APIs **/
 
 // POST /sessions 

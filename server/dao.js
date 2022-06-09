@@ -65,7 +65,7 @@ exports.updateStudyPlan = (courses, userId) => {
     return new Promise((resolve, reject) => {
         for (const course of courses) {
             const sql = `INSERT INTO studyplans(userid, course) VALUES (?,?)`;
-            db.run(sql, [userId,course.code], (err, row) => {
+            db.run(sql, [userId, course.code], (err, row) => {
                 if (err) {
                     reject(err);
                     return;
@@ -75,4 +75,17 @@ exports.updateStudyPlan = (courses, userId) => {
             })
         }
     })
+}
+
+exports.deleteStudyPlan = (userId) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM studyplans WHERE userid=?';
+        db.run(sql, [userId], (err) => {
+            if (err) {
+                reject(err);
+                return;
+            } else
+                resolve(null);
+        });
+    });
 }

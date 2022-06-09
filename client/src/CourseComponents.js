@@ -24,9 +24,12 @@ function CoursesTable(props) {
     const [planTmp, setPlanTmp] = useState([]);
 
     const currentCredits = planTmp.reduce((count, c) => count + c.credits, 0)
+    const maxCredits = props.fullTime ? 80 : 40;
+    const minCredits = props.fullTime ? 40 : 20;
 
     const addCourseToPlan = (course) => {
-        setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
+        // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
+        setPlanTmp((oldCourses) => [...oldCourses, course]);
         console.log(planTmp);
     }
 
@@ -49,7 +52,50 @@ function CoursesTable(props) {
     }
 
     function handleStudyPlanUpdate() {
-        props.updateStudyPlan(planTmp);
+        if (checkCredits()) {
+            if (checkPropedeuticCourses()) {
+                if (checkIncompatibleCourses()) {
+                    props.updateStudyPlan(planTmp);
+                } else {
+                    console.log("Some courses are not compatible");
+                }
+            } else {
+                console.log("Missing propedeutic course");
+            }
+        } else {
+            console.log(`Insert between ${minCredits} and ${maxCredits} credits`);
+        }
+    }
+
+    function checkCredits() {
+        if (currentCredits >= minCredits && currentCredits <= maxCredits) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function checkPropedeuticCourses() {
+        for (const course of planTmp) {
+            if (course.propedeuticcourse) {
+                if (!planTmp.find(c => c.code === course.propedeuticcourse)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function checkIncompatibleCourses() {
+        for (const course of planTmp) {
+            const incompatibilities = calculateIncompatibilities(course);
+            for (const incompatible of incompatibilities) {
+                if (planTmp.find(c => c.code === incompatible)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -57,9 +103,9 @@ function CoursesTable(props) {
         <>
             {props.editing ?
                 <>
-                    <p>Insert between {props.fullTime ? 60 : 20} and {props.fullTime ? 80 : 40} credits</p>
+                    <p>Insert between {minCredits} and {maxCredits} credits</p>
                     <br />
-                    <p> Credits: {currentCredits}/60</p>
+                    <p> Credits: {currentCredits}</p>
                     <Button onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>
                 </>
                 : false}

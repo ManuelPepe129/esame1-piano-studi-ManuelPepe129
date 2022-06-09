@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 function MainComponent(props) {
     return (
-        <Container>
+        <>
             <Row>
                 <Col>
                     <h1>List of Available Courses</h1>
@@ -16,7 +16,7 @@ function MainComponent(props) {
                     <CoursesTable courses={props.courses} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime} updateStudyPlan={props.updateStudyPlan}></CoursesTable>
                 </Col>
             </Row>
-        </Container>
+        </>
     );
 }
 

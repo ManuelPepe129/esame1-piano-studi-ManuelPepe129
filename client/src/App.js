@@ -131,7 +131,7 @@ function App2() {
         <Row><Col>
           {message ? <Alert variant='danger' onClose={() => setMessage('')} dismissible>{message}</Alert> : false}
         </Col></Row>
-      </Container>
+      
 
       <Routes>
         <Route path='/' element={
@@ -160,6 +160,7 @@ function App2() {
         } />
         < Route path='*' element={<h1>Page not found</h1>} />
       </Routes>
+      </Container>
     </>
   );
 }

@@ -53,8 +53,26 @@ exports.listStudyPlan = (userId) => {
             }
             else {
                 const studyplan = rows;
+                console.log(userId);
                 resolve(studyplan);
             }
         });
+    })
+}
+
+// post study plan for current loggedin user
+exports.updateStudyPlan = (courses, userId) => {
+    return new Promise((resolve, reject) => {
+        for (const course of courses) {
+            const sql = `INSERT INTO studyplans(userid, course) VALUES (?,?)`;
+            db.run(sql, [userId,course.code], (err, row) => {
+                if (err) {
+                    reject(err);
+                    return;
+                } else {
+                    resolve(null);
+                }
+            })
+        }
     })
 }

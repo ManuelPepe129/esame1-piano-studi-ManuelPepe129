@@ -6,6 +6,7 @@ const APIURL = new URL('http://localhost:3001/api/');
 
 async function getAllCourses() {
     // call: GET /api/courses
+
     const response = await fetch(new URL('courses', APIURL));
     const coursesJson = await response.json();
     if (response.ok) {
@@ -27,7 +28,7 @@ async function getAllIncompatibilities() {
 }
 
 async function getStudyPlan() {
-    // call: GET /api/exams
+    // call: GET /api/studyplan
     const response = await fetch(new URL('studyplan', APIURL), { credentials: 'include' });
     const studyPlanJson = await response.json();
     if (response.ok) {
@@ -35,6 +36,29 @@ async function getStudyPlan() {
     } else {
         throw studyPlanJson;  // an object with the error coming from the server
     }
+}
+
+async function updateStudyPlan(studyPlan) {
+    // call: POST /api/studyplan
+    return new Promise((resolve, reject) => {
+        fetch(new URL('studyplan', APIURL), {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(studyPlan),
+        }).then((response) => {
+            if (response.ok) {
+                resolve(null);
+            } else {
+                // analyze the cause of error
+                response.json()
+                    .then((message) => { reject(message); }) // error message in the response body
+                    .catch(() => { reject({ error: "Cannot parse server response." }) }); // something else
+            }
+        }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
+    });
 }
 
 /* USER login API */
@@ -72,5 +96,5 @@ async function getUserInfo() {
 }
 
 
-const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, login, logout, getUserInfo };
+const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, updateStudyPlan, login, logout, getUserInfo };
 export default API;

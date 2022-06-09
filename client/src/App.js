@@ -24,19 +24,50 @@ function App2() {
   const [user, setUser] = useState({});
   const [studyPlan, setStudyPlan] = useState([]);
   const [message, setMessage] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [fullTime, setFullTime] = useState(true);
+
 
   function handleError(err) {
-    console.log(err);
+    setMessage(err.error);
+   //console.log(err.error);
   }
 
   useEffect(() => {
+    Promise.all([API.getAllCourses(), API.getAllIncompatibilities()])
+      .then(responses => {
+        setCourses(responses[0]);
+        setIncompatibilities(responses[1]);
+        setInitialLoading(false);
+      })
+      .catch(err => handleError(err));
+    /*
     API.getAllCourses()
       .then((courses) => { setCourses(courses); })
       .catch(err => handleError(err));
     API.getAllIncompatibilities()
       .then((incompatibilities) => { setIncompatibilities(incompatibilities); })
       .catch(err => handleError(err));
-  }, [])
+      */
+    //setInitialLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn && !initialLoading) {
+      API.getStudyPlan()
+        .then((sp) => {
+          if (sp.length === 0) {
+            setStudyPlan(sp);
+          } else {
+            const courses_tmp = courses.filter(course => sp.find(c => c.course === course.code))
+              .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
+
+            setStudyPlan(courses_tmp);
+          }
+        })
+        .catch(err => handleError(err));
+    }
+  }, [loggedIn, initialLoading]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -46,14 +77,19 @@ function App2() {
         const user = await API.getUserInfo();
         setLoggedIn(true);
         setUser(user);
-        const studyPlan = await API.getStudyPlan();
-        setStudyPlan(getStudyPlanDetails(studyPlan));
+
       } catch (err) {
         handleError(err);
       }
     };
     checkAuth();
   }, []);
+
+  const updateStudyPlan = (sp) => {
+    API.updateStudyPlan(sp)
+      .then(setStudyPlan(sp))
+      .catch(err => handleError(err));
+  }
 
   const doLogin = (credentials) => {
     API.login(credentials)
@@ -62,18 +98,10 @@ function App2() {
         setUser(user);
         setMessage('');
         // navigate('/');
-        API.getStudyPlan()
-          .then(studyPlan => {
-            setStudyPlan(getStudyPlanDetails(studyPlan));
-          })
-          .catch(err => {
-            handleError(err);
-          })
       })
       .catch(err => {
         handleError(err);
-      }
-      )
+      });
   }
 
   const doLogout = async () => {
@@ -82,13 +110,16 @@ function App2() {
     setUser({});
     setStudyPlan([]);
   }
+  /*
+    const getStudyPlanDetails = (studyPlan_) => {
+      const courses_tmp = courses.filter(course => studyPlan_.find(c => c.course === course.code))
+        .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
+      console.log(`studyplandetails: ${courses_tmp}`);
+      return courses_tmp;
+    }
+    */
 
-  const getStudyPlanDetails = (studyPlan_) => {
-    const courses_tmp = courses.filter(course => studyPlan_.find(c => c.course === course.code))
-      .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
-    console.log(`studyplandetails: ${courses_tmp}`);
-    return courses_tmp;
-  }
+
 
 
   return (
@@ -104,30 +135,39 @@ function App2() {
 
       <Routes>
         <Route path='/' element={
-          loggedIn ? (<>
-            <MainComponent courses={courses} incompatibilities={incompatibilities} /><StudyPlanTable courses={studyPlan} />
-          </>)
-            : <Navigate to='/login' />}
+          initialLoading ? <Loading /> :
+            loggedIn ? (<>
+              {studyPlan.length ?
+                <StudyPlanTable courses={studyPlan} />
+                : <StudyPlanOptionForm updateFullTime={setFullTime} />
+              }
+              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
+            </>)
+              : <Navigate to='/login' />}
         />
         <Route path='/login' element={
-          loggedIn ? <Navigate to='/' /> : <>
-            <MainComponent courses={courses} incompatibilities={incompatibilities} />
-            <LoginForm login={doLogin}></LoginForm>
-          </>
+          loggedIn ? <Navigate to='/' /> :
+            <>
+              <LoginForm login={doLogin}></LoginForm>
+              <MainComponent courses={courses} incompatibilities={incompatibilities} />
+            </>
         } />
         <Route path='/edit' element={
-          <StudyPlanOptionForm />
+          loggedIn ? <>
+            <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} />
+          </>
+            : <Navigate to='/login' />
         } />
-        <Route path='/studyplan' element={
-          loggedIn ? (
-            <>
-              <MainComponent courses={courses} incompatibilities={incompatibilities} />
-              <StudyPlanTable courses={courses} />
-            </>) : <Navigate to='/login' />
-        } />
+        < Route path='*' element={<h1>Page not found</h1>} />
       </Routes>
     </>
   );
+}
+
+function Loading(props) {
+  return (
+    <h2>Loading data ...</h2>
+  )
 }
 
 export default App;

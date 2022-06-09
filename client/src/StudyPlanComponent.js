@@ -1,14 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { CaretDown, CaretUp } from 'react-bootstrap-icons';
 import { useState } from 'react';
-import { MainComponent } from './CourseComponents';
+import { useNavigate } from 'react-router-dom';
 
-function StudyPlanOptionForm() {
+function StudyPlanOptionForm(props) {
     const [fulltime, setFulltime] = useState(true);
+
+    const navigate = useNavigate();
 
     const handleSubmit = event => {
         event.preventDefault();
+        props.updateFullTime(fulltime);
+        navigate('/edit');
     };
 
     const handleOptionChange = (event) => {
@@ -24,9 +27,10 @@ function StudyPlanOptionForm() {
         <Container>
             <Row>
                 <Col>
+                <p>You have no study plan yet. Create a new one:</p>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group>
-                            <Form.Label>Part time o Full time</Form.Label>
+                            <Form.Label>Choose Full-time or  Part-time</Form.Label>
 
                             <Form.Check
                                 inline

@@ -54,7 +54,6 @@ exports.listStudyPlan = (userId) => {
             }
             else {
                 const studyplan = rows;
-                console.log(userId);
                 resolve(studyplan);
             }
         });

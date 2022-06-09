@@ -13,15 +13,22 @@ function LoginForm(props) {
 
     // SOME VALIDATION, ADD MORE!!!
     let valid = true;
-    if (username === '' || password === '')
+    let message = '';
+    if (username === '') {
       valid = false;
+      message = 'Error: empty username';
+    } else if (password === '') {
+      valid = false;
+      message = 'Error: empty password';
+    }
+
 
     if (valid) {
       props.login(credentials);
     }
     else {
       // show a better error message...
-      setErrorMessage('Error(s) in the form, please fix it.')
+      setErrorMessage(message);
     }
   };
 

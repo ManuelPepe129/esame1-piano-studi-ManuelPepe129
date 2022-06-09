@@ -65,11 +65,13 @@ function StudyPlanOptionForm(props) {
     )
 }
 
-function StudyPlanActions() {
+function StudyPlanActions(props) {
+    const navigate = useNavigate();
+    
     return (
         <>
-            <Button variant='primary'>Edit current study plan</Button>
-            <Button variant='danger'>Delete current study plan</Button>
+            <Button variant='primary' onClick={()=>navigate('/edit')}>Edit current study plan</Button>
+            <Button variant='danger' onClick={()=>props.deleteStudyPlan()}>Delete current study plan</Button>
         </>
     );
 }
@@ -103,4 +105,4 @@ function CourseRow(props) {
     )
 }
 
-export { StudyPlanOptionForm, StudyPlanTable };
+export { StudyPlanOptionForm, StudyPlanTable, StudyPlanActions };

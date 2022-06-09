@@ -6,7 +6,7 @@ import { Container, Row, Col, Alert } from 'react-bootstrap';
 import API from './API';
 import { LoginForm, LogoutButton } from './LoginComponents';
 import { MainComponent } from './CourseComponents';
-import { StudyPlanOptionForm, StudyPlanTable } from './StudyPlanComponent';
+import { StudyPlanOptionForm, StudyPlanTable, StudyPlanActions } from './StudyPlanComponent';
 
 
 function App() {
@@ -30,7 +30,7 @@ function App2() {
 
   function handleError(err) {
     setMessage(err.error);
-   //console.log(err.error);
+    //console.log(err.error);
   }
 
   useEffect(() => {
@@ -91,6 +91,12 @@ function App2() {
       .catch(err => handleError(err));
   }
 
+  const deleteStudyPlan = () => {
+    API.deleteStudyPlan()
+      .then(setStudyPlan([]))
+      .catch(err => handleError(err));
+  }
+
   const doLogin = (credentials) => {
     API.login(credentials)
       .then(user => {
@@ -131,35 +137,38 @@ function App2() {
         <Row><Col>
           {message ? <Alert variant='danger' onClose={() => setMessage('')} dismissible>{message}</Alert> : false}
         </Col></Row>
-      
 
-      <Routes>
-        <Route path='/' element={
-          initialLoading ? <Loading /> :
-            loggedIn ? (<>
-              {studyPlan.length ?
-                <StudyPlanTable courses={studyPlan} />
-                : <StudyPlanOptionForm updateFullTime={setFullTime} />
-              }
-              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
-            </>)
-              : <Navigate to='/login' />}
-        />
-        <Route path='/login' element={
-          loggedIn ? <Navigate to='/' /> :
-            <>
-              <LoginForm login={doLogin}></LoginForm>
-              <MainComponent courses={courses} incompatibilities={incompatibilities} />
+
+        <Routes>
+          <Route path='/' element={
+            initialLoading ? <Loading /> :
+              loggedIn ? (<>
+                {studyPlan.length ?
+                  <>
+                    <StudyPlanTable courses={studyPlan} />
+                    <StudyPlanActions deleteStudyPlan={deleteStudyPlan}/>
+                  </>
+                  : <StudyPlanOptionForm updateFullTime={setFullTime} />
+                }
+                <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
+              </>)
+                : <Navigate to='/login' />}
+          />
+          <Route path='/login' element={
+            loggedIn ? <Navigate to='/' /> :
+              <>
+                <LoginForm login={doLogin}></LoginForm>
+                <MainComponent courses={courses} incompatibilities={incompatibilities} />
+              </>
+          } />
+          <Route path='/edit' element={
+            loggedIn ? <>
+              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} />
             </>
-        } />
-        <Route path='/edit' element={
-          loggedIn ? <>
-            <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} />
-          </>
-            : <Navigate to='/login' />
-        } />
-        < Route path='*' element={<h1>Page not found</h1>} />
-      </Routes>
+              : <Navigate to='/login' />
+          } />
+          < Route path='*' element={<h1>Page not found</h1>} />
+        </Routes>
       </Container>
     </>
   );

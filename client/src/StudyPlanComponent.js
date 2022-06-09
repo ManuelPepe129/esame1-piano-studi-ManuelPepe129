@@ -27,7 +27,7 @@ function StudyPlanOptionForm(props) {
         <Container>
             <Row>
                 <Col>
-                <p>You have no study plan yet. Create a new one:</p>
+                    <p>You have no study plan yet. Create a new one:</p>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group>
                             <Form.Label>Choose Full-time or  Part-time</Form.Label>
@@ -65,9 +65,17 @@ function StudyPlanOptionForm(props) {
     )
 }
 
-function StudyPlanTable(props)
-{
-    return(
+function StudyPlanActions() {
+    return (
+        <>
+            <Button variant='primary'>Edit current study plan</Button>
+            <Button variant='danger'>Delete current study plan</Button>
+        </>
+    );
+}
+
+function StudyPlanTable(props) {
+    return (
         <Table>
             <thead>
                 <tr>
@@ -85,8 +93,7 @@ function StudyPlanTable(props)
     );
 }
 
-function CourseRow(props)
-{
+function CourseRow(props) {
     return (
         <tr>
             <td>{props.course.code}</td>

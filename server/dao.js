@@ -13,7 +13,8 @@ exports.listCourses = () => {
         // const sql = "SELECT * FROM courses ORDER BY code";
         const sql = `SELECT code, name, credits, propedeuticcourse, maxstudentsenrolled, count(course) AS studentsenrolled 
             FROM courses C  LEFT JOIN studyplans S ON C.code = S.course 
-            GROUP BY code`;
+            GROUP BY code
+            ORDER BY name`;
 
         db.all(sql, [], (err, rows) => {
             if (err)

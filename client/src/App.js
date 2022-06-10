@@ -75,7 +75,12 @@ function App2() {
     checkAuth();
   }, []);
 
-  const updateStudyPlan = (sp) => {
+  const updateStudyPlan = async (sp) => {
+
+    if (studyPlan.length) {
+      await deleteStudyPlan();
+    }
+
     API.updateStudyPlan(sp)
       .then(setStudyPlan(sp))
       .catch(err => handleError(err));
@@ -106,18 +111,6 @@ function App2() {
     setUser({});
     setStudyPlan([]);
   }
-  
-  /*
-    const getStudyPlanDetails = (studyPlan_) => {
-      const courses_tmp = courses.filter(course => studyPlan_.find(c => c.course === course.code))
-        .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
-      console.log(`studyplandetails: ${courses_tmp}`);
-      return courses_tmp;
-    }
-    */
-
-
-
 
   return (
     <>

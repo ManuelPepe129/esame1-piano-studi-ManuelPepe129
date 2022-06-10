@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Table, Form, Button, Container, Row, Col, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -59,20 +59,22 @@ function StudyPlanOptionForm(props) {
                     </Form>
                 </Col>
             </Row>
-
         </Container>
-
     )
 }
 
 function StudyPlanActions(props) {
     const navigate = useNavigate();
-    
+
     return (
-        <>
-            <Button variant='primary' onClick={()=>navigate('/edit')}>Edit current study plan</Button>
-            <Button variant='danger' onClick={()=>props.deleteStudyPlan()}>Delete current study plan</Button>
-        </>
+        <ButtonToolbar>
+            <ButtonGroup >
+                <Button variant='primary' onClick={() => navigate('/edit')}>Edit current study plan</Button>
+            </ButtonGroup>
+            <ButtonGroup >
+                <Button variant='danger' onClick={() => props.deleteStudyPlan()}>Delete current study plan</Button>
+            </ButtonGroup>
+        </ButtonToolbar>
     );
 }
 

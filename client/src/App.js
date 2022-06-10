@@ -154,7 +154,7 @@ function App2() {
           } />
           <Route path='/edit' element={
             loggedIn ? <>
-              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} studyPlan={studyPlan} />
+              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
             </>
               : <Navigate to='/login' />
           } />

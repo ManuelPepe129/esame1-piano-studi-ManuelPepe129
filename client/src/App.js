@@ -26,6 +26,7 @@ function App2() {
   const [message, setMessage] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
   const [fullTime, setFullTime] = useState(true);
+  const [dirty, setDirty] = useState(false);
 
 
   function handleError(err) {
@@ -75,6 +76,17 @@ function App2() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    if (dirty) {
+      API.getAllCourses()
+        .then(courses => {
+          setCourses(courses);
+          setDirty(false);
+        })
+        .catch(err => handleError(err));
+    }
+  }, [dirty]);
+
   const updateStudyPlan = async (sp) => {
 
     if (studyPlan.length) {
@@ -82,14 +94,18 @@ function App2() {
     }
 
     API.updateStudyPlan(sp)
-      .then(setStudyPlan(sp))
-      .catch(err => handleError(err));
+      .then(() => {
+        setStudyPlan(sp);
+        setDirty(true);
+      }).catch(err => handleError(err));
   }
 
   const deleteStudyPlan = () => {
     API.deleteStudyPlan()
-      .then(setStudyPlan([]))
-      .catch(err => handleError(err));
+      .then(() => {
+        setStudyPlan([]);
+        setDirty(true);
+      }).catch(err => handleError(err));
   }
 
   const doLogin = (credentials) => {

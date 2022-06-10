@@ -138,7 +138,6 @@ function CourseRow(props) {
 function CourseActions(props) {
     let message = '';
 
-    // TODO: provare a creare una singola funzione per checkIncompatibilities e displayIncompatibilities
     function checkIncompatibilities() {
         for (const inc of props.incompatibilities) {
             if (props.planTmp.find(c => c.code === inc)) {

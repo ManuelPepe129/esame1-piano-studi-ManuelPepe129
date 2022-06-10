@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Col, Row, Button} from 'react-bootstrap';
+import { Table, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
 import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function MainComponent(props) {
@@ -24,6 +25,8 @@ function MainComponent(props) {
 function CoursesTable(props) {
     const [planTmp, setPlanTmp] = useState(props.studyPlan ? props.studyPlan : []);
 
+    const navigate = useNavigate();
+
     const currentCredits = planTmp.reduce((count, c) => count + c.credits, 0)
     const maxCredits = props.fullTime ? 80 : 40;
     const minCredits = props.fullTime ? 40 : 20;
@@ -31,12 +34,10 @@ function CoursesTable(props) {
     const addCourseToPlan = (course) => {
         // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
         setPlanTmp((oldCourses) => [...oldCourses, course]);
-        // console.log(planTmp);
     }
 
     const removeCourseToPlan = (course) => {
         setPlanTmp(planTmp.filter((c) => c.code !== course.code))
-        // console.log(planTmp);
     }
 
     function calculateIncompatibilities(course) {
@@ -55,8 +56,9 @@ function CoursesTable(props) {
     function handleStudyPlanUpdate() {
         if (checkCredits()) {
             props.updateStudyPlan(planTmp);
+            navigate('/');
         } else {
-           props.updateMessage(`Insert between ${minCredits} and ${maxCredits} credits`);
+            props.updateMessage(`Insert between ${minCredits} and ${maxCredits} credits`);
         }
     }
 
@@ -76,7 +78,10 @@ function CoursesTable(props) {
                     <p>Insert between {minCredits} and {maxCredits} credits</p>
                     <br />
                     <p> Credits: {currentCredits}</p>
-                    <Button onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>
+                    <ButtonGroup>
+                        <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>
+                        <Button variant='warning' onClick={() => navigate('/')}>Cancel</Button>
+                    </ButtonGroup>
                 </>
                 : false}
             <Table>
@@ -102,6 +107,7 @@ function CoursesTable(props) {
 
 function CourseRow(props) {
     const [displayDetails, setDisplayDetails] = useState(false);
+    // const inStudyPlan = props.planTmp.find(c => c.code === props.course.code) ? true : false;
 
     let statusClass = null;
 
@@ -132,6 +138,7 @@ function CourseRow(props) {
 function CourseActions(props) {
     let message = '';
 
+    // TODO: provare a creare una singola funzione per checkIncompatibilities e displayIncompatibilities
     function checkIncompatibilities() {
         for (const inc of props.incompatibilities) {
             if (props.planTmp.find(c => c.code === inc)) {

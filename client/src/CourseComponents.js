@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Container, Col, Row, Button } from 'react-bootstrap';
+import { Table, Col, Row, Button } from 'react-bootstrap';
 import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
 import { useState } from 'react';
 
@@ -13,7 +13,8 @@ function MainComponent(props) {
             </Row>
             <Row>
                 <Col>
-                    <CoursesTable courses={props.courses} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime} updateStudyPlan={props.updateStudyPlan}></CoursesTable>
+                    <CoursesTable courses={props.courses} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
+                        studyPlan={props.studyPlan} updateStudyPlan={props.updateStudyPlan}></CoursesTable>
                 </Col>
             </Row>
         </>
@@ -21,7 +22,7 @@ function MainComponent(props) {
 }
 
 function CoursesTable(props) {
-    const [planTmp, setPlanTmp] = useState([]);
+    const [planTmp, setPlanTmp] = useState(props.studyPlan ? props.studyPlan : []);
 
     const currentCredits = planTmp.reduce((count, c) => count + c.credits, 0)
     const maxCredits = props.fullTime ? 80 : 40;
@@ -30,12 +31,12 @@ function CoursesTable(props) {
     const addCourseToPlan = (course) => {
         // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
         setPlanTmp((oldCourses) => [...oldCourses, course]);
-        console.log(planTmp);
+        // console.log(planTmp);
     }
 
     const removeCourseToPlan = (course) => {
         setPlanTmp(planTmp.filter((c) => c.code !== course.code))
-        console.log(planTmp);
+        // console.log(planTmp);
     }
 
     function calculateIncompatibilities(course) {
@@ -53,15 +54,7 @@ function CoursesTable(props) {
 
     function handleStudyPlanUpdate() {
         if (checkCredits()) {
-            if (checkPropedeuticCourses()) {
-                if (checkIncompatibleCourses()) {
-                    props.updateStudyPlan(planTmp);
-                } else {
-                    console.log("Some courses are not compatible");
-                }
-            } else {
-                console.log("Missing propedeutic course");
-            }
+            props.updateStudyPlan(planTmp);
         } else {
             console.log(`Insert between ${minCredits} and ${maxCredits} credits`);
         }
@@ -73,29 +66,6 @@ function CoursesTable(props) {
         } else {
             return false;
         }
-    }
-
-    function checkPropedeuticCourses() {
-        for (const course of planTmp) {
-            if (course.propedeuticcourse) {
-                if (!planTmp.find(c => c.code === course.propedeuticcourse)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function checkIncompatibleCourses() {
-        for (const course of planTmp) {
-            const incompatibilities = calculateIncompatibilities(course);
-            for (const incompatible of incompatibilities) {
-                if (planTmp.find(c => c.code === incompatible)) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
 
@@ -148,7 +118,7 @@ function CourseRow(props) {
         <>
             <tr className={statusClass}>
                 <CourseData course={props.course} />
-                <CourseActions course={props.course} toggleDisplayDetails={toggleDisplayDetails} displayDetails={displayDetails} editing={props.editing} planTmp={props.planTmp} addCourseToPlan={props.addCourseToPlan} removeCourseToPlan={props.removeCourseToPlan} />
+                <CourseActions course={props.course} toggleDisplayDetails={toggleDisplayDetails} incompatibilities={props.incompatibilities} displayDetails={displayDetails} editing={props.editing} planTmp={props.planTmp} addCourseToPlan={props.addCourseToPlan} removeCourseToPlan={props.removeCourseToPlan} />
             </tr>
             {
                 displayDetails ?
@@ -160,10 +130,39 @@ function CourseRow(props) {
 }
 
 function CourseActions(props) {
+
+    function checkIncompatibilities() {
+        for (const inc of props.incompatibilities) {
+            if (props.planTmp.find(c => c.code === inc)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkPropedeuticCourses() {
+        if (props.course.propedeuticcourse) {
+            if (props.planTmp.find(c => c.code === props.course.propedeuticcourse)) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+
+    }
+
+    const disabled = (checkIncompatibilities() || checkPropedeuticCourses());
+
     return (
         <td>
-            <Button onClick={() => { props.toggleDisplayDetails(); }}>{props.displayDetails ? <CaretUp /> : <CaretDown />}</Button>
-            {props.editing ? props.planTmp.find(c => c.code === props.course.code) ? <Button onClick={() => props.removeCourseToPlan(props.course)}><Dash /></Button> : <Button onClick={() => props.addCourseToPlan(props.course)}> <Plus /></Button> : false}
+            <Button onClick={() => { props.toggleDisplayDetails(); }} variant="outline-secondary">{props.displayDetails ? <CaretUp /> : <CaretDown />}</Button>
+            {props.editing ?
+                props.planTmp.find(c => c.code === props.course.code) ?
+                    <Button onClick={() => props.removeCourseToPlan(props.course)}><Dash /></Button> :
+                    <Button disabled={disabled} onClick={() => props.addCourseToPlan(props.course)}> <Plus /></Button> :
+                false}
         </td>
     );
 }

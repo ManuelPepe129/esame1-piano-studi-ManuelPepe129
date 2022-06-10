@@ -41,15 +41,6 @@ function App2() {
         setInitialLoading(false);
       })
       .catch(err => handleError(err));
-    /*
-    API.getAllCourses()
-      .then((courses) => { setCourses(courses); })
-      .catch(err => handleError(err));
-    API.getAllIncompatibilities()
-      .then((incompatibilities) => { setIncompatibilities(incompatibilities); })
-      .catch(err => handleError(err));
-      */
-    //setInitialLoading(false);
   }, []);
 
   useEffect(() => {
@@ -77,9 +68,8 @@ function App2() {
         const user = await API.getUserInfo();
         setLoggedIn(true);
         setUser(user);
-
       } catch (err) {
-        handleError(err);
+        //handleError(err);
       }
     };
     checkAuth();
@@ -116,6 +106,7 @@ function App2() {
     setUser({});
     setStudyPlan([]);
   }
+  
   /*
     const getStudyPlanDetails = (studyPlan_) => {
       const courses_tmp = courses.filter(course => studyPlan_.find(c => c.course === course.code))
@@ -146,7 +137,7 @@ function App2() {
                 {studyPlan.length ?
                   <>
                     <StudyPlanTable courses={studyPlan} />
-                    <StudyPlanActions deleteStudyPlan={deleteStudyPlan}/>
+                    <StudyPlanActions deleteStudyPlan={deleteStudyPlan} />
                   </>
                   : <StudyPlanOptionForm updateFullTime={setFullTime} />
                 }
@@ -163,7 +154,7 @@ function App2() {
           } />
           <Route path='/edit' element={
             loggedIn ? <>
-              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} />
+              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} studyPlan={studyPlan} />
             </>
               : <Navigate to='/login' />
           } />

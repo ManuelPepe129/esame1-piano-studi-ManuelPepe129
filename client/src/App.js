@@ -87,13 +87,13 @@ function App2() {
     }
   }, [dirty]);
 
-  const updateStudyPlan = async (sp) => {
+  const addStudyPlan = async (sp) => {
 
     if (studyPlan.length) {
       await deleteStudyPlan();
     }
 
-    API.updateStudyPlan(sp)
+    API.addStudyPlan(sp)
       .then(() => {
         setStudyPlan(sp);
         setDirty(true);
@@ -168,7 +168,7 @@ function App2() {
           } />
           <Route path='/edit' element={
             loggedIn ? <>
-              <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
+              <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
             </>
               : <Navigate to='/login' />
           } />

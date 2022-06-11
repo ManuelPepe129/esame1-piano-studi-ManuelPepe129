@@ -15,7 +15,7 @@ function MainComponent(props) {
             <Row>
                 <Col>
                     <CoursesTable courses={props.courses} updateStudentsEnrolled={props.updateStudentsEnrolled} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
-                        studyPlan={props.studyPlan} updateStudyPlan={props.updateStudyPlan} updateMessage={props.updateMessage}></CoursesTable>
+                        studyPlan={props.studyPlan} addStudyPlan={props.addStudyPlan} updateMessage={props.updateMessage}></CoursesTable>
                 </Col>
             </Row>
         </>
@@ -74,7 +74,7 @@ function CoursesTable(props) {
 
     function handleStudyPlanUpdate() {
         if (checkCredits()) {
-            props.updateStudyPlan(planTmp);
+            props.addStudyPlan(planTmp);
             navigate('/');
         } else {
             props.updateMessage(`Insert between ${minCredits} and ${maxCredits} credits`);

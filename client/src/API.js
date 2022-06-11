@@ -38,7 +38,7 @@ async function getStudyPlan() {
     }
 }
 
-async function updateStudyPlan(studyPlan) {
+async function addStudyPlan(studyPlan) {
     // call: POST /api/studyplan
     return new Promise((resolve, reject) => {
         fetch(new URL('studyplan', APIURL), {
@@ -113,5 +113,5 @@ async function getUserInfo() {
 }
 
 
-const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, updateStudyPlan, deleteStudyPlan, login, logout, getUserInfo };
+const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, addStudyPlan, deleteStudyPlan, login, logout, getUserInfo };
 export default API;

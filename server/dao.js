@@ -61,7 +61,7 @@ exports.listStudyPlan = (userId) => {
 }
 
 // post study plan for current loggedin user
-exports.updateStudyPlan = (courses, userId) => {
+exports.addStudyPlan = (courses, userId) => {
     return new Promise((resolve, reject) => {
         for (const course of courses) {
             const sql = `INSERT INTO studyplans(userid, course) VALUES (?,?)`;

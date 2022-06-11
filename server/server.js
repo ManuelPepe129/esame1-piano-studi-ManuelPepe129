@@ -110,7 +110,7 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
 
 app.post('/api/studyplan', isLoggedIn, async (req, res) => {
     try {
-        await dao.updateStudyPlan(req.body, req.user.id);
+        await dao.addStudyPlan(req.body, req.user.id);
         res.status(201).end();
     } catch (err) {
         console.log(err);

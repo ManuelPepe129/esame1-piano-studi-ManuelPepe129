@@ -7,6 +7,7 @@ import API from './API';
 import { LoginForm, LogoutButton } from './LoginComponents';
 import { MainComponent } from './CourseComponents';
 import { StudyPlanOptionForm, StudyPlanTable, StudyPlanActions } from './StudyPlanComponent';
+import { MyNavbar } from './MyNavbar';
 
 
 function App() {
@@ -135,10 +136,8 @@ function App2() {
 
   return (
     <>
+      <MyNavbar loggedIn={loggedIn} user={user} doLogout={doLogout}></MyNavbar>
       <Container>
-        <Row><Col>
-          {loggedIn ? <LogoutButton logout={doLogout} user={user} /> : false}
-        </Col></Row>
         <Row><Col>
           {message ? <Alert variant='danger' onClose={() => setMessage('')} dismissible>{message}</Alert> : false}
         </Col></Row>
@@ -147,23 +146,22 @@ function App2() {
         <Routes>
           <Route path='/' element={
             initialLoading ? <Loading /> :
-              loggedIn ? (<>
-                {studyPlan.length ?
+              (<>
+                {loggedIn ? studyPlan.length ?
                   <>
                     <StudyPlanTable courses={studyPlan} />
                     <StudyPlanActions deleteStudyPlan={deleteStudyPlan} />
                   </>
                   : <StudyPlanOptionForm updateFullTime={setFullTime} />
+                  : false
                 }
                 <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
-              </>)
-                : <Navigate to='/login' />}
+              </>)}
           />
           <Route path='/login' element={
             loggedIn ? <Navigate to='/' /> :
               <>
                 <LoginForm login={doLogin}></LoginForm>
-                <MainComponent courses={courses} incompatibilities={incompatibilities} />
               </>
           } />
           <Route path='/edit' element={

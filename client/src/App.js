@@ -2,7 +2,7 @@ import './App.css';
 
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Alert, Card, CardGroup } from 'react-bootstrap';
 import API from './API';
 import { LoginForm, LogoutButton } from './LoginComponents';
 import { MainComponent } from './CourseComponents';
@@ -141,33 +141,50 @@ function App2() {
         <Row><Col>
           {message ? <Alert variant='danger' onClose={() => setMessage('')} dismissible>{message}</Alert> : false}
         </Col></Row>
-
-
+        <br />
         <Routes>
           <Route path='/' element={
             initialLoading ? <Loading /> :
               (<>
-                {loggedIn ? studyPlan.length ?
+                {loggedIn ?
                   <>
-                    <StudyPlanTable courses={studyPlan} />
-                    <StudyPlanActions deleteStudyPlan={deleteStudyPlan} />
+                    
+                    <Card>
+                      <Card.Body>
+                        {studyPlan.length ?
+                          <>
+                            <StudyPlanTable courses={studyPlan} />
+                            <StudyPlanActions deleteStudyPlan={deleteStudyPlan} />
+                          </>
+                          : <StudyPlanOptionForm updateFullTime={setFullTime} />}
+                      </Card.Body>
+                    </Card>
+                    <br />
                   </>
-                  : <StudyPlanOptionForm updateFullTime={setFullTime} />
                   : false
                 }
-                <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
+                <Card>
+                  <Card.Body>
+                    <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
+                  </Card.Body>
+                </Card>
               </>)}
           />
           <Route path='/login' element={
             loggedIn ? <Navigate to='/' /> :
-              <>
-                <LoginForm login={doLogin}></LoginForm>
-              </>
+              <Card>
+                <Card.Body>
+                  <LoginForm login={doLogin}></LoginForm>
+                </Card.Body>
+              </Card>
           } />
           <Route path='/edit' element={
-            loggedIn ? <>
-              <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
-            </>
+            loggedIn ?
+              <Card>
+                <Card.Body>
+                  <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
+                </Card.Body>
+              </Card>
               : <Navigate to='/login' />
           } />
           < Route path='*' element={<h1>Page not found</h1>} />

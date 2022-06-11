@@ -36,7 +36,6 @@ function LoginForm(props) {
     <Container>
       <Row>
         <Col>
-          <h2>Login</h2>
           <Form>
             {errorMessage ? <Alert variant='danger'>{errorMessage}</Alert> : ''}
             <Form.Group controlId='username'>

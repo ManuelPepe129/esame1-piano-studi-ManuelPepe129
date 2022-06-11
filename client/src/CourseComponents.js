@@ -6,19 +6,12 @@ import { useState } from 'react';
 
 function MainComponent(props) {
     return (
-        <>
-            <Row>
-                <Col>
-                    <h1>List of Available Courses</h1>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <CoursesTable courses={props.courses} updateStudentsEnrolled={props.updateStudentsEnrolled} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
-                        studyPlan={props.studyPlan} addStudyPlan={props.addStudyPlan} updateMessage={props.updateMessage}></CoursesTable>
-                </Col>
-            </Row>
-        </>
+        <Row>
+            <Col>
+                <CoursesTable courses={props.courses} updateStudentsEnrolled={props.updateStudentsEnrolled} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
+                    studyPlan={props.studyPlan} addStudyPlan={props.addStudyPlan} updateMessage={props.updateMessage}></CoursesTable>
+            </Col>
+        </Row>
     );
 }
 

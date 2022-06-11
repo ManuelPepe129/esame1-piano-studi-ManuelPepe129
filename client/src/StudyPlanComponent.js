@@ -23,47 +23,50 @@ function StudyPlanOptionForm(props) {
         }
     }
 
-    return (
-        <Container>
-            <Row>
-                <Col>
-                    <p>You have no study plan yet. Create a new one:</p>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group>
-                            <Form.Label>Choose Full-time or  Part-time</Form.Label>
+    return (<Container>
+        <p>You have no study plan yet. Create a new one:</p>
+        <Form onSubmit={handleSubmit}>
+            <Form.Group>
+                <Form.Label>Choose the type of enrollment: </Form.Label>
 
-                            <Form.Check
-                                inline
-                                type="radio"
-                                label="Full-time"
-                                name="studyplanoption"
-                                value='fulltime'
-                                checked={fulltime === true}
-                                onChange={handleOptionChange}
-                                id={"fulltime"}
-                            />
-                            <Form.Check
-                                inline
-                                type="radio"
-                                label="Part-time"
-                                name="studyplanoption"
-                                value='parttime'
-                                checked={fulltime === false}
-                                onChange={handleOptionChange}
-                                id={"parttime"}
-                            />
-                        </Form.Group>
-                        <Button variant="primary" type="submit">
-                            Create Studyplan
-                        </Button>
-                    </Form>
-                </Col>
-            </Row>
-        </Container>
+                <Form.Check
+
+                    type="radio"
+                    label="Full-time"
+                    name="studyplanoption"
+                    value='fulltime'
+                    checked={fulltime === true}
+                    onChange={handleOptionChange}
+                    id={"fulltime"}
+                />
+                <Form.Check
+
+                    type="radio"
+                    label="Part-time"
+                    name="studyplanoption"
+                    value='parttime'
+                    checked={fulltime === false}
+                    onChange={handleOptionChange}
+                    id={"parttime"}
+                />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+                Create Studyplan
+            </Button>
+        </Form>
+    </Container>);
+}
+
+function StudyPlanTableWrapper(props) {
+    return (
+        <>
+            <StudyPlanTable courses={props.courses} />
+            <StudyPlanTableActions deleteStudyPlan={props.deleteStudyPlan} />
+        </>
     )
 }
 
-function StudyPlanActions(props) {
+function StudyPlanTableActions(props) {
     const navigate = useNavigate();
 
     return (
@@ -103,4 +106,4 @@ function CourseRow(props) {
     )
 }
 
-export { StudyPlanOptionForm, StudyPlanTable, StudyPlanActions };
+export { StudyPlanOptionForm, StudyPlanTableWrapper };

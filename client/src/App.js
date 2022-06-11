@@ -6,7 +6,7 @@ import { Container, Row, Col, Alert, Card, CardGroup } from 'react-bootstrap';
 import API from './API';
 import { LoginForm, LogoutButton } from './LoginComponents';
 import { MainComponent } from './CourseComponents';
-import { StudyPlanOptionForm, StudyPlanTable, StudyPlanActions } from './StudyPlanComponent';
+import { StudyPlanOptionForm, StudyPlanTableWrapper } from './StudyPlanComponent';
 import { MyNavbar } from './MyNavbar';
 
 
@@ -148,23 +148,29 @@ function App2() {
               (<>
                 {loggedIn ?
                   <>
-                    
-                    <Card>
-                      <Card.Body>
-                        {studyPlan.length ?
-                          <>
-                            <StudyPlanTable courses={studyPlan} />
-                            <StudyPlanActions deleteStudyPlan={deleteStudyPlan} />
-                          </>
-                          : <StudyPlanOptionForm updateFullTime={setFullTime} />}
-                      </Card.Body>
-                    </Card>
+                    {studyPlan.length ?
+                      <Card>
+                        <Card.Body>
+                          <Card.Title>Study Plan</Card.Title>
+                          <StudyPlanTableWrapper courses={studyPlan} deleteStudyPlan={deleteStudyPlan} />
+                        </Card.Body>
+                      </Card>
+                      :
+                      <Card>
+                        <Card.Body>
+                          <Card.Title>Create A New Study Plan</Card.Title>
+                          <StudyPlanOptionForm updateFullTime={setFullTime} />
+                        </Card.Body>
+                      </Card>
+                    }
+
                     <br />
                   </>
                   : false
                 }
                 <Card>
                   <Card.Body>
+                    <Card.Title>List of Available Courses</Card.Title>
                     <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
                   </Card.Body>
                 </Card>
@@ -174,6 +180,7 @@ function App2() {
             loggedIn ? <Navigate to='/' /> :
               <Card>
                 <Card.Body>
+                  <Card.Title>Login Form</Card.Title>
                   <LoginForm login={doLogin}></LoginForm>
                 </Card.Body>
               </Card>
@@ -182,6 +189,7 @@ function App2() {
             loggedIn ?
               <Card>
                 <Card.Body>
+                  <Card.Title>Edit Current Study Plan</Card.Title>
                   <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
                 </Card.Body>
               </Card>

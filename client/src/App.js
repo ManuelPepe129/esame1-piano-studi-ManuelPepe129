@@ -128,6 +128,11 @@ function App2() {
     setStudyPlan([]);
   }
 
+  function updateStudentsEnrolled(course) {
+    setCourses(courses => courses.map(
+      c => (c.code === course.code) ? course : c));
+  }
+
   return (
     <>
       <Container>
@@ -163,7 +168,7 @@ function App2() {
           } />
           <Route path='/edit' element={
             loggedIn ? <>
-              <MainComponent courses={courses} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
+              <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} updateStudyPlan={updateStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
             </>
               : <Navigate to='/login' />
           } />

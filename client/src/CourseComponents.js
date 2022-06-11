@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Col, Row, Button, ButtonGroup } from 'react-bootstrap';
+import { Table, Col, Row, Button } from 'react-bootstrap';
 import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -14,7 +14,7 @@ function MainComponent(props) {
             </Row>
             <Row>
                 <Col>
-                    <CoursesTable courses={props.courses} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
+                    <CoursesTable courses={props.courses} updateStudentsEnrolled={props.updateStudentsEnrolled} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
                         studyPlan={props.studyPlan} updateStudyPlan={props.updateStudyPlan} updateMessage={props.updateMessage}></CoursesTable>
                 </Col>
             </Row>
@@ -34,10 +34,29 @@ function CoursesTable(props) {
     const addCourseToPlan = (course) => {
         // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
         setPlanTmp((oldCourses) => [...oldCourses, course]);
+        const newCourse = {
+            code: course.code,
+            name: course.name,
+            credits: course.credits,
+            propedeuticcourse: course.propedeuticcourse,
+            studentsenrolled: course.studentsenrolled + 1,
+            maxstudentsenrolled: course.maxstudentsenrolled
+        };
+        props.updateStudentsEnrolled(newCourse);
+
     }
 
     const removeCourseToPlan = (course) => {
-        setPlanTmp(planTmp.filter((c) => c.code !== course.code))
+        setPlanTmp(planTmp.filter((c) => c.code !== course.code));
+        const newCourse = {
+            code: course.code,
+            name: course.name,
+            credits: course.credits,
+            propedeuticcourse: course.propedeuticcourse,
+            studentsenrolled: course.studentsenrolled - 1,
+            maxstudentsenrolled: course.maxstudentsenrolled
+        };
+        props.updateStudentsEnrolled(newCourse);
     }
 
     function calculateIncompatibilities(course) {
@@ -75,31 +94,46 @@ function CoursesTable(props) {
         <>
             {props.editing ?
                 <>
-                    <p>Insert between {minCredits} and {maxCredits} credits</p>
-                    <br />
-                    <p> Credits: {currentCredits}</p>
-                    <ButtonGroup>
-                        <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>
-                        <Button variant='warning' onClick={() => navigate('/')}>Cancel</Button>
-                    </ButtonGroup>
+                    <Row><p>Insert between {minCredits} and {maxCredits} credits</p></Row>
+
+                    <Row>
+                        <p> Credits in current study plan: {currentCredits}</p>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>{' '}
+                            <Button variant='warning' onClick={() => navigate('/')}>Cancel</Button>
+                        </Col>
+                    </Row>
                 </>
                 : false}
-            <Table>
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Course</th>
-                        <th>Credits</th>
-                        <th>StudentsEnrolled</th>
-                        <th>MaxStudentsEnrolled</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        props.courses.map((course) => <CourseRow course={course} key={course.code} incompatibilities={calculateIncompatibilities(course)} editing={props.editing} planTmp={planTmp} addCourseToPlan={addCourseToPlan} removeCourseToPlan={removeCourseToPlan} />)
-                    }
-                </tbody>
-            </Table>
+            <Row>
+                <Col>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Course</th>
+                                <th>Credits</th>
+                                <th>StudentsEnrolled</th>
+                                <th>MaxStudentsEnrolled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                props.courses.map((course) =>
+                                    <CourseRow course={course} key={course.code}
+                                        incompatibilities={calculateIncompatibilities(course)}
+                                        editing={props.editing}
+                                        planTmp={planTmp}
+                                        addCourseToPlan={addCourseToPlan}
+                                        removeCourseToPlan={removeCourseToPlan}
+                                    />)
+                            }
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
         </>
     );
 

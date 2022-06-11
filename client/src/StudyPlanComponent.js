@@ -67,14 +67,10 @@ function StudyPlanActions(props) {
     const navigate = useNavigate();
 
     return (
-        <ButtonToolbar>
-            <ButtonGroup >
-                <Button variant='primary' onClick={() => navigate('/edit')}>Edit current study plan</Button>
-            </ButtonGroup>
-            <ButtonGroup >
-                <Button variant='danger' onClick={() => props.deleteStudyPlan()}>Delete current study plan</Button>
-            </ButtonGroup>
-        </ButtonToolbar>
+        <>
+            <Button variant='primary' onClick={() => navigate('/edit')}>Edit current study plan</Button>{' '}
+            <Button variant='danger' onClick={() => props.deleteStudyPlan()}>Delete current study plan</Button>
+        </>
     );
 }
 

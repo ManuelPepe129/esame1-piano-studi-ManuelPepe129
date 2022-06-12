@@ -135,7 +135,15 @@ app.delete('/api/studyplan', isLoggedIn, async (req, res) => {
 });
 
 // PUT /api/studyplan/enrollment
-app.put('/api/studyplan/enrollment', isLoggedIn, async (req, res) => {
+app.put('/api/studyplan/enrollment', isLoggedIn, [
+    check('enrollment').isInt({ min: 0, max: 1 })
+], async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     try {
         await dao.updateUserEnrollment(req.body.enrollment, req.user.id)
         res.status(200).end();

@@ -26,9 +26,7 @@ function App2() {
   const [studyPlan, setStudyPlan] = useState([]);
   const [message, setMessage] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
-  const [fullTime, setFullTime] = useState(true);
   const [dirty, setDirty] = useState(false);
-
 
   function handleError(err) {
     setMessage(err.error);
@@ -66,7 +64,6 @@ function App2() {
     const checkAuth = async () => {
       try {
         // here you have the user info, if already logged in
-        // TODO: store them somewhere and use them, if needed
         const user = await API.getUserInfo();
         setLoggedIn(true);
         setUser(user);
@@ -91,7 +88,7 @@ function App2() {
   const addStudyPlan = async (sp) => {
 
     if (studyPlan.length) {
-      // i need to delete the old study plan befor adding the new one
+      // i need to delete the old study plan before adding the new one
       API.deleteStudyPlan()
         .then(() => {
           setStudyPlan([]);
@@ -101,7 +98,7 @@ function App2() {
             .then(() => {
               setStudyPlan(sp);
               setDirty(true);
-              updateEnrollment(fullTime);
+              updateEnrollment();
             }).catch(err => handleError(err));
         }).catch(err => handleError(err));
     } else {
@@ -109,7 +106,7 @@ function App2() {
         .then(() => {
           setStudyPlan(sp);
           setDirty(true);
-          updateEnrollment(fullTime);
+          updateEnrollment();
         }).catch(err => handleError(err));
     }
   }
@@ -123,10 +120,10 @@ function App2() {
   }
 
   const updateEnrollment = () => {
-    API.updateUserEnrollment(fullTime)
-    .then(() => {
-      console.log("enrollment update successfully");
-    }).catch(err => handleError(err));
+    API.updateUserEnrollment(user.isFullTime)
+      .then(() => {
+        console.log("enrollment update successfully");
+      }).catch(err => handleError(err));
   }
 
   const doLogin = (credentials) => {
@@ -152,6 +149,11 @@ function App2() {
   function updateStudentsEnrolled(course) {
     setCourses(courses => courses.map(
       c => (c.code === course.code) ? course : c));
+  }
+
+  const setFullTime = async (fullTime) => {
+    const newUser = { id: user.id, username: user.email, name: user.name, isFullTime: fullTime };
+    setUser(newUser);
   }
 
   return (
@@ -210,7 +212,7 @@ function App2() {
               <Card>
                 <Card.Body>
                   <Card.Title>Edit Current Study Plan</Card.Title>
-                  <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={fullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
+                  <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={user.isFullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
                 </Card.Body>
               </Card>
               : <Navigate to='/login' />

@@ -94,7 +94,7 @@ exports.deleteStudyPlan = (userId) => {
 // update current user enrollment
 exports.updateUserEnrollment = (sub, userId) => {
     return new Promise((resolve, reject) => {
-        const sql = 'UPDATE users SET enrollment=? WHERE id=?';
+        const sql = 'UPDATE users SET isFullTime=? WHERE id=?';
         db.run(sql, [sub, userId], function (err) {
             if (err) {
                 reject(err);

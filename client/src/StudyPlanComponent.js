@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function StudyPlanOptionForm(props) {
-    const [fulltime, setFulltime] = useState(true);
+    const [fulltime, setFulltime] = useState(1);
 
     const navigate = useNavigate();
 
@@ -17,9 +17,9 @@ function StudyPlanOptionForm(props) {
     const handleOptionChange = (event) => {
         const val = event.target.value;
         if (val === 'fulltime') {
-            setFulltime(true);
+            setFulltime(1);
         } else {
-            setFulltime(false);
+            setFulltime(0);
         }
     }
 
@@ -35,7 +35,7 @@ function StudyPlanOptionForm(props) {
                     label="Full-time"
                     name="studyplanoption"
                     value='fulltime'
-                    checked={fulltime === true}
+                    checked={fulltime === 1}
                     onChange={handleOptionChange}
                     id={"fulltime"}
                 />
@@ -45,7 +45,7 @@ function StudyPlanOptionForm(props) {
                     label="Part-time"
                     name="studyplanoption"
                     value='parttime'
-                    checked={fulltime === false}
+                    checked={fulltime === 0}
                     onChange={handleOptionChange}
                     id={"parttime"}
                 />

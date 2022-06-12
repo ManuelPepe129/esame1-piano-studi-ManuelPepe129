@@ -107,6 +107,7 @@ function App2() {
           setStudyPlan(sp);
           setDirty(true);
           updateEnrollment();
+          setMessage({ msg: 'Study plan added successfully', type: 'success' });
         }).catch(err => handleError(err));
     }
   }
@@ -123,7 +124,7 @@ function App2() {
   const updateEnrollment = () => {
     API.updateUserEnrollment(user.isFullTime)
       .then(() => {
-        setMessage({ msg: 'Enrollment updated successfully', type: 'success' });
+        //setMessage({ msg: 'Enrollment updated successfully', type: 'success' });
       }).catch(err => handleError(err));
   }
 
@@ -145,6 +146,7 @@ function App2() {
     setLoggedIn(false);
     setUser({});
     setStudyPlan([]);
+    setMessage({ msg: 'Log out successfully', type: 'success' });
   }
 
   function updateStudentsEnrolled(course) {

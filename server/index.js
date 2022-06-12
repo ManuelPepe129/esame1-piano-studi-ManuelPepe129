@@ -113,6 +113,7 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
 });
 
 // POST /api/studyplan
+// TODO:checks
 app.post('/api/studyplan', isLoggedIn, async (req, res) => {
     try {
         await dao.addStudyPlan(req.body, req.user.id);
@@ -151,7 +152,7 @@ app.put('/api/studyplan/enrollment', isLoggedIn, [
         console.log(err);
         res.status(503).json({ error: 'Database error during enrollment update.' })
     }
-})
+});
 
 /** Users APIs **/
 
@@ -188,9 +189,9 @@ app.delete('/api/sessions/current', (req, res) => {
 app.get('/api/sessions/current', (req, res) => {
     if (req.isAuthenticated()) {
         res.status(200).json(req.user);
+    } else {
+        res.status(401).json({ error: 'Unauthenticated user!' });
     }
-    else
-        res.status(401).json({ error: 'Unauthenticated user!' });;
 });
 
 

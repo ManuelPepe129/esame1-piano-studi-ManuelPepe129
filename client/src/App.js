@@ -91,14 +91,27 @@ function App2() {
   const addStudyPlan = async (sp) => {
 
     if (studyPlan.length) {
-      await deleteStudyPlan();
+      // i need to delete the old study plan befor adding the new one
+      API.deleteStudyPlan()
+        .then(() => {
+          setStudyPlan([]);
+          setDirty(true);
+          // insert the new study plan
+          API.addStudyPlan(sp)
+            .then(() => {
+              setStudyPlan(sp);
+              setDirty(true);
+              updateEnrollment(fullTime);
+            }).catch(err => handleError(err));
+        }).catch(err => handleError(err));
+    } else {
+      API.addStudyPlan(sp)
+        .then(() => {
+          setStudyPlan(sp);
+          setDirty(true);
+          updateEnrollment(fullTime);
+        }).catch(err => handleError(err));
     }
-
-    API.addStudyPlan(sp)
-      .then(() => {
-        setStudyPlan(sp);
-        setDirty(true);
-      }).catch(err => handleError(err));
   }
 
   const deleteStudyPlan = () => {
@@ -107,6 +120,13 @@ function App2() {
         setStudyPlan([]);
         setDirty(true);
       }).catch(err => handleError(err));
+  }
+
+  const updateEnrollment = () => {
+    API.updateUserEnrollment(fullTime)
+    .then(() => {
+      console.log("enrollment update successfully");
+    }).catch(err => handleError(err));
   }
 
   const doLogin = (credentials) => {

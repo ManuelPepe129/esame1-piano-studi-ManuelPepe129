@@ -121,13 +121,11 @@
   - Request body: the courses to be added to the study plan
 
     ```json
-    [
-    {
+    [{
       "code": "01UDFOV",
       "name": "Applicazioni Web I ",
       "credits": 6
-    },
-    {
+    }, {
       "code": "02GOLOV",
       "name": "Architetture dei sistemi di elaborazione",
       "credits": 12

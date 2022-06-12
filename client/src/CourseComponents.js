@@ -4,6 +4,9 @@ import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+// TODO: aggiungere "non puoi aggiungere questo corso perché ecc..."
+// TODO: check sul numero massimo di studenti iscritti
+
 function MainComponent(props) {
     return (
         <Row>

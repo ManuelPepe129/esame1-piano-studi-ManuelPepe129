@@ -27,7 +27,6 @@ function LoginForm(props) {
       props.login(credentials);
     }
     else {
-      // show a better error message...
       setErrorMessage(message);
     }
   };

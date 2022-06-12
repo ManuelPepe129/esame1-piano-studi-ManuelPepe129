@@ -29,8 +29,8 @@ function App2() {
   const [dirty, setDirty] = useState(false);
 
   function handleError(err) {
-    setMessage(err.error);
-    //console.log(err.error);
+    setMessage({ msg: err.error, type: 'danger' });
+    console.log(err);
   }
 
   useEffect(() => {
@@ -116,13 +116,14 @@ function App2() {
       .then(() => {
         setStudyPlan([]);
         setDirty(true);
+        setMessage({ msg: 'Study plan deleted successfully', type: 'success' });
       }).catch(err => handleError(err));
   }
 
   const updateEnrollment = () => {
     API.updateUserEnrollment(user.isFullTime)
       .then(() => {
-        console.log("enrollment update successfully");
+        setMessage({ msg: 'Enrollment updated successfully', type: 'success' });
       }).catch(err => handleError(err));
   }
 
@@ -131,7 +132,7 @@ function App2() {
       .then(user => {
         setLoggedIn(true);
         setUser(user);
-        setMessage('');
+        setMessage({ msg: `Welcome, ${user.name}`, type: 'success' });
         // navigate('/');
       })
       .catch(err => {
@@ -161,7 +162,7 @@ function App2() {
       <MyNavbar loggedIn={loggedIn} user={user} doLogout={doLogout}></MyNavbar>
       <Container>
         <Row><Col>
-          {message ? <Alert variant='danger' onClose={() => setMessage('')} dismissible>{message}</Alert> : false}
+          {message ? <Alert variant={message.type} onClose={() => setMessage('')} dismissible>{message.msg}</Alert> : false}
         </Col></Row>
         <br />
         <Routes>

@@ -70,7 +70,7 @@ function CoursesTable(props) {
             props.addStudyPlan(planTmp);
             navigate('/');
         } else {
-            props.updateMessage(`Insert between ${minCredits} and ${maxCredits} credits`);
+            props.updateMessage({msg:`Insert between ${minCredits} and ${maxCredits} credits`, type:'warning'});
         }
     }
 
@@ -139,7 +139,7 @@ function CourseRow(props) {
     let statusClass = null;
 
     if (props.planTmp.find(c => c.code === props.course.code)) {
-        statusClass = 'table-warning';
+        statusClass = 'table-primary';
     }
 
 

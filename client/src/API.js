@@ -115,7 +115,7 @@ async function login(credentials) {
         return user;
     } else {
         const errDetail = await response.json();
-        throw errDetail.message;
+        throw errDetail;
     }
 }
 

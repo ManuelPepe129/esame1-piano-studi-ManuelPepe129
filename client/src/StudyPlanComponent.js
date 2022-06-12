@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Form, Button, Container, Row, Col, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import { Table, Form, Button, Container } from 'react-bootstrap';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,7 +30,6 @@ function StudyPlanOptionForm(props) {
                 <Form.Label>Choose the type of enrollment: </Form.Label>
 
                 <Form.Check
-
                     type="radio"
                     label="Full-time"
                     name="studyplanoption"
@@ -40,7 +39,6 @@ function StudyPlanOptionForm(props) {
                     id={"fulltime"}
                 />
                 <Form.Check
-
                     type="radio"
                     label="Part-time"
                     name="studyplanoption"

@@ -1,13 +1,11 @@
 import './App.css';
 
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Alert, Card, CardGroup } from 'react-bootstrap';
+import { Container, Row, Col, Alert } from 'react-bootstrap';
 import API from './API';
-import { LoginForm, LogoutButton } from './LoginComponents';
-import { MainComponent } from './CourseComponents';
-import { StudyPlanOptionForm, StudyPlanTableWrapper } from './StudyPlanComponent';
 import { MyNavbar } from './MyNavbar';
+import { StudyPlanTableCard, StudyPlanOptionFormCard, MainComponentCard, LoginFormCard } from './CardWrapperComponents';
 
 
 function App() {
@@ -154,7 +152,7 @@ function App2() {
       c => (c.code === course.code) ? course : c));
   }
 
-  const setFullTime = async (fullTime) => {
+  function setFullTime(fullTime) {
     const newUser = { id: user.id, username: user.email, name: user.name, isFullTime: fullTime };
     setUser(newUser);
   }
@@ -174,50 +172,24 @@ function App2() {
                 {loggedIn ?
                   <>
                     {studyPlan.length ?
-                      <Card>
-                        <Card.Body>
-                          <Card.Title>Study Plan</Card.Title>
-                          <StudyPlanTableWrapper courses={studyPlan} deleteStudyPlan={deleteStudyPlan} />
-                        </Card.Body>
-                      </Card>
+                      <StudyPlanTableCard courses={studyPlan} deleteStudyPlan={deleteStudyPlan} />
                       :
-                      <Card>
-                        <Card.Body>
-                          <Card.Title>Create A New Study Plan</Card.Title>
-                          <StudyPlanOptionForm updateFullTime={setFullTime} />
-                        </Card.Body>
-                      </Card>
+                      <StudyPlanOptionFormCard updateFullTime={setFullTime} />
                     }
-
                     <br />
                   </>
                   : false
                 }
-                <Card>
-                  <Card.Body>
-                    <Card.Title>List of Available Courses</Card.Title>
-                    <MainComponent courses={courses} incompatibilities={incompatibilities} editing={false} />
-                  </Card.Body>
-                </Card>
+                <MainComponentCard courses={courses} incompatibilities={incompatibilities} editing={false} title={"List of Available Courses"} />
               </>)}
           />
           <Route path='/login' element={
             loggedIn ? <Navigate to='/' /> :
-              <Card>
-                <Card.Body>
-                  <Card.Title>Login Form</Card.Title>
-                  <LoginForm login={doLogin}></LoginForm>
-                </Card.Body>
-              </Card>
+              <LoginFormCard login={doLogin}></LoginFormCard>
           } />
           <Route path='/edit' element={
             loggedIn ?
-              <Card>
-                <Card.Body>
-                  <Card.Title>Edit Current Study Plan</Card.Title>
-                  <MainComponent courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={user.isFullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
-                </Card.Body>
-              </Card>
+              <MainComponentCard title={"Edit Current Study Plan"} courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={user.isFullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
               : <Navigate to='/login' />
           } />
           < Route path='*' element={<h1>Page not found</h1>} />

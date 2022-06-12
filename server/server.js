@@ -76,6 +76,8 @@ app.use(passport.session());
 
 
 /** APIs **/
+
+// GET /api/courses
 app.get('/api/courses', (req, res) => {
     dao.listCourses()
         .then(courses => res.json(courses))
@@ -85,6 +87,7 @@ app.get('/api/courses', (req, res) => {
         });
 });
 
+// GET /api/incompatibilities
 app.get('/api/incompatibilities', (req, res) => {
     dao.listIncompatibilities()
         .then(incompatibilities => res.json(incompatibilities))
@@ -94,6 +97,7 @@ app.get('/api/incompatibilities', (req, res) => {
         });
 });
 
+// GET /api/studyplan
 app.get('/api/studyplan', isLoggedIn, async (req, res) => {
     try {
         const result = await dao.listStudyPlan(req.user.id);
@@ -108,6 +112,7 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
     }
 });
 
+// POST /api/studyplan
 app.post('/api/studyplan', isLoggedIn, async (req, res) => {
     try {
         await dao.addStudyPlan(req.body, req.user.id);
@@ -128,6 +133,17 @@ app.delete('/api/studyplan', isLoggedIn, async (req, res) => {
         res.status(503).json({ error: `Database error during the deletion of studyplan.` });
     }
 });
+
+// PUT /api/studyplan/enrollment
+app.put('/api/studyplan/enrollment', isLoggedIn, async (req, res) => {
+    try {
+        await dao.updateUserEnrollment(req.body.enrollment, req.user.id)
+        res.status(200).end();
+    } catch {
+        console.log(err);
+        res.status(503).json({ error: 'Database error during enrollment update.' })
+    }
+})
 
 /** Users APIs **/
 

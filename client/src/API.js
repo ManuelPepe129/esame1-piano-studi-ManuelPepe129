@@ -72,7 +72,28 @@ async function deleteStudyPlan() {
             } else {
                 response.json()
                     .then((message) => { reject(message); })
-                    .catch(() => { reject({ error: "Cannot parse server response." }) })
+                    .catch(() => { reject({ error: "Cannot parse server response." }) });
+            }
+        }).catch(() => { reject({ error: "Cannot communicate with the server." }) });
+    });
+}
+
+async function updateUserEnrollment(enrollment) {
+    return new Promise((resolve, reject) => {
+        fetch(new URL('studyplan/enrollment', APIURL), {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ enrollment: enrollment })
+        }).then((response) => {
+            if (response.ok) {
+                resolve(null);
+            } else {
+                response.json()
+                    .then((message) => reject(message))
+                    .catch(() => { reject({ error: "Cannot parse server response." }) });
             }
         }).catch(() => { reject({ error: "Cannot communicate with the server." }) });
     });
@@ -113,5 +134,5 @@ async function getUserInfo() {
 }
 
 
-const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, addStudyPlan, deleteStudyPlan, login, logout, getUserInfo };
+const API = { getAllCourses, getAllIncompatibilities, getStudyPlan, addStudyPlan, deleteStudyPlan, updateUserEnrollment, login, logout, getUserInfo };
 export default API;

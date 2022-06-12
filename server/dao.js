@@ -77,6 +77,7 @@ exports.addStudyPlan = (courses, userId) => {
     })
 }
 
+// delete study plan for current loggedin user
 exports.deleteStudyPlan = (userId) => {
     return new Promise((resolve, reject) => {
         const sql = 'DELETE FROM studyplans WHERE userid=?';
@@ -86,6 +87,20 @@ exports.deleteStudyPlan = (userId) => {
                 return;
             } else
                 resolve(null);
+        });
+    });
+}
+
+// update current user enrollment
+exports.updateUserEnrollment = (sub, userId) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'UPDATE users SET enrollment=? WHERE id=?';
+        db.run(sql, [sub, userId], function (err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(null);
+            }
         });
     });
 }

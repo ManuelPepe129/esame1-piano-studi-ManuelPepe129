@@ -87,27 +87,19 @@ function App2() {
 
     if (studyPlan.length) {
       // i need to delete the old study plan before adding the new one
-      API.deleteStudyPlan()
+      await API.deleteStudyPlan()
         .then(() => {
           setStudyPlan([]);
-          setDirty(true);
-          // insert the new study plan
-          API.addStudyPlan(sp)
-            .then(() => {
-              setStudyPlan(sp);
-              setDirty(true);
-              updateEnrollment();
-            }).catch(err => handleError(err));
-        }).catch(err => handleError(err));
-    } else {
-      API.addStudyPlan(sp)
-        .then(() => {
-          setStudyPlan(sp);
-          setDirty(true);
-          updateEnrollment();
-          setMessage({ msg: 'Study plan added successfully', type: 'success' });
         }).catch(err => handleError(err));
     }
+
+    API.addStudyPlan(sp)
+      .then(() => {
+        setStudyPlan(sp);
+        setDirty(true);
+        updateEnrollment();
+        setMessage({ msg: 'Study plan added successfully', type: 'success' });
+      }).catch(err => handleError(err));
   }
 
   const deleteStudyPlan = () => {

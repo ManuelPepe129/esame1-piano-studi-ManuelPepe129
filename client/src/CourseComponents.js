@@ -191,7 +191,7 @@ function CourseActions(props) {
     }
 
     function checkMaxStudentsEnrolled() {
-        return props.course.studentsenrolled ? (props.course.studentsenrolled >= props.course.maxstudentsenrolled) : false;
+        return props.course.maxstudentsenrolled ? (props.course.studentsenrolled >= props.course.maxstudentsenrolled) : false;
     }
 
     const disabled = (checkIncompatibilities() || checkPropedeuticCourses() || checkMaxStudentsEnrolled());

@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Col, Row, Button } from 'react-bootstrap';
+import { Table, Col, Row, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -171,6 +171,7 @@ function CourseActions(props) {
     function checkIncompatibilities() {
         for (const inc of props.incompatibilities) {
             if (props.planTmp.find(c => c.code === inc)) {
+                message = `This course is incompatible with ${inc}`;
                 return true;
             }
         }
@@ -191,7 +192,12 @@ function CourseActions(props) {
     }
 
     function checkMaxStudentsEnrolled() {
-        return props.course.maxstudentsenrolled ? (props.course.studentsenrolled >= props.course.maxstudentsenrolled) : false;
+        if(props.course.maxstudentsenrolled && (props.course.studentsenrolled >= props.course.maxstudentsenrolled))
+        {
+            message = `Course reached max students enrolled`;
+            return true;
+        }
+        return  false;
     }
 
     const disabled = (checkIncompatibilities() || checkPropedeuticCourses() || checkMaxStudentsEnrolled());
@@ -200,7 +206,14 @@ function CourseActions(props) {
         <td>
             <Button onClick={() => { props.toggleDisplayDetails(); }} variant="outline-secondary">{props.displayDetails ? <CaretUp /> : <CaretDown />}</Button>
             {props.editing ?
-                <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.planTmp.find(c => c.code === props.course.code) ? <Dash /> : <Plus />}</Button>
+                disabled ?
+                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >{message}</Tooltip>}>
+                        <span className="d-inline-block">
+                            <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.planTmp.find(c => c.code === props.course.code) ? <Dash /> : <Plus />} </Button>
+                        </span>
+                    </OverlayTrigger>
+                    : <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.planTmp.find(c => c.code === props.course.code) ? <Dash /> : <Plus />} </Button>
+
                 : false}
         </td>
     );

@@ -73,7 +73,7 @@ function CoursesTable(props) {
             props.addStudyPlan(planTmp);
             navigate('/');
         } else {
-            props.updateMessage({msg:`Insert between ${minCredits} and ${maxCredits} credits`, type:'warning'});
+            props.updateMessage({ msg: `Insert between ${minCredits} and ${maxCredits} credits`, type: 'warning' });
         }
     }
 
@@ -188,10 +188,13 @@ function CourseActions(props) {
         } else {
             return false;
         }
-
     }
 
-    const disabled = (checkIncompatibilities() || checkPropedeuticCourses());
+    function checkMaxStudentsEnrolled() {
+        return props.course.studentsenrolled ? (props.course.studentsenrolled >= props.course.maxstudentsenrolled) : false;
+    }
+
+    const disabled = (checkIncompatibilities() || checkPropedeuticCourses() || checkMaxStudentsEnrolled());
 
     return (
         <td>

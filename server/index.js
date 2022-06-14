@@ -113,10 +113,9 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
 });
 
 // POST /api/studyplan
-// TODO:checks
+// TODO: check incompatibilities
 app.post('/api/studyplan', isLoggedIn, [
     check('courses').custom((studyplan, { req }) => {
-        console.log();
         return dao.listCourses()
             .then(courses => {
                 // uso il piano di studi nel body solo per sapere quali corsi si vogliono aggiungere

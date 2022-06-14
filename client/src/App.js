@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Container, Row, Col, Alert } from 'react-bootstrap';
 import API from './API';
 import { MyNavbar } from './MyNavbar';
+import { MyAlert } from './AlertComponent';
 import { StudyPlanTableCard, StudyPlanOptionFormCard, MainComponentCard, LoginFormCard } from './CardWrapperComponents';
 
 
@@ -157,7 +158,7 @@ function App2() {
       <MyNavbar loggedIn={loggedIn} user={user} doLogout={doLogout}></MyNavbar>
       <Container>
         <Row><Col>
-          {message ? <Alert variant={message.type} onClose={() => setMessage('')} dismissible>{message.msg}</Alert> : false}
+          <MyAlert message={message} setMessage={setMessage} />
         </Col></Row>
         <br />
         <Routes>

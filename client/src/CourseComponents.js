@@ -69,14 +69,26 @@ function CoursesTable(props) {
         return tmp;
     }
 
+
     function handleStudyPlanUpdate() {
         if (checkCredits()) {
-            props.addStudyPlan(planTmp);
-            navigate('/');
+            if (checkPropedeuticCourses()) {
+                if (checkIncompatibleCourses()) {
+                    props.addStudyPlan(planTmp);
+                    navigate('/');
+                } else {
+                    props.updateMessage({ msg: "Some courses are not compatible", type: 'warning' });
+                }
+            } else {
+                props.updateMessage({ msg: "Missing propedeutic course", type: 'warning' });
+            }
         } else {
             props.updateMessage({ msg: `Insert between ${minCredits} and ${maxCredits} credits`, type: 'warning' });
         }
     }
+
+    /* Checks on submission */
+
 
     function checkCredits() {
         if (currentCredits >= minCredits && currentCredits <= maxCredits) {
@@ -84,6 +96,29 @@ function CoursesTable(props) {
         } else {
             return false;
         }
+    }
+
+    function checkPropedeuticCourses() {
+        for (const course of planTmp) {
+            if (course.propedeuticcourse) {
+                if (!planTmp.find(c => c.code === course.propedeuticcourse)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function checkIncompatibleCourses() {
+        for (const course of planTmp) {
+            const incompatibilities = calculateIncompatibilities(course);
+            for (const incompatible of incompatibilities) {
+                if (planTmp.find(c => c.code === incompatible)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -193,12 +228,11 @@ function CourseActions(props) {
     }
 
     function checkMaxStudentsEnrolled() {
-        if(props.course.maxstudentsenrolled && (props.course.studentsenrolled >= props.course.maxstudentsenrolled))
-        {
+        if (props.course.maxstudentsenrolled && (props.course.studentsenrolled >= props.course.maxstudentsenrolled)) {
             message = `Course reached max students enrolled`;
             return true;
         }
-        return  false;
+        return false;
     }
 
     const disabled = (checkIncompatibilities() || checkPropedeuticCourses() || checkMaxStudentsEnrolled());

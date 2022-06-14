@@ -108,15 +108,61 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
         }
     } catch {
         console.log(err);
-        res.status(500).json({ error: "Database error while retrieving courses incompatibilities" }).end()
+        res.status(500).json({ error: "Database error while retrieving studyplan" }).end()
     }
 });
 
 // POST /api/studyplan
 // TODO:checks
-app.post('/api/studyplan', isLoggedIn, async (req, res) => {
+app.post('/api/studyplan', isLoggedIn, [
+    check('courses').custom((studyplan, { req }) => {
+        console.log();
+        return dao.listCourses()
+            .then(courses => {
+                // uso il piano di studi nel body solo per sapere quali corsi si vogliono aggiungere
+                // prendo i dati effettivi dei corsi dal db
+                const realstudyplan = courses.filter((c) => {
+                    return studyplan.some(s => { return c.code === s.code });
+                })
+
+                // check credits
+                const currentCredits = realstudyplan.reduce((count, c) => count + c.credits, 0);
+                const maxCredits = req.user.isFullTime ? 80 : 40;
+                const minCredits = req.user.isFullTime ? 40 : 20;
+                if (minCredits > currentCredits || maxCredits < currentCredits) {
+                    console.log(`Credits for your current plan must be between ${minCredits} and ${maxCredits}, current: ${currentCredits} `);
+                    throw new Error("Error in credits sum");
+                }
+
+                // check propedeutics
+
+                for (let course of realstudyplan) {
+                    if (course.propedeuticcourse) {
+                        if (!realstudyplan.find(c => c.code === course.propedeuticcourse)) {
+                            throw new Error(`Missing propedeutic course ${course.propedeuticcourse} for course ${course.code}`);
+                        }
+                    }
+
+
+                    // check muxStudentsEnrolled
+                    if (course.maxstudentsenrolled && (course.studentsenrolled >= course.maxstudentsenrolled)) {
+                        console.log(`${course.code} reached max capacity`);
+                        throw new Error(`${course.code} reached max capacity`);
+                    }
+                }
+            }).catch((err) => {
+                throw new Error(err);
+            });
+    })
+], async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array()});
+    }
+
     try {
-        await dao.addStudyPlan(req.body, req.user.id);
+        await dao.addStudyPlan(req.body.courses, req.user.id);
         res.status(201).end();
     } catch (err) {
         console.log(err);

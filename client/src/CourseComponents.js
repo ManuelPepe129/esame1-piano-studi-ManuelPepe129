@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 // TODO: aggiungere "non puoi aggiungere questo corso perché ecc..."
 // TODO: check sul numero massimo di studenti iscritti
+// FIXME: check quando si rimuove un corso propedeutico (fare i check anche nel submit del form)
 
 function MainComponent(props) {
     return (

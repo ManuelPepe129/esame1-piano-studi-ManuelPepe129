@@ -27,7 +27,11 @@ function App2() {
   const [dirty, setDirty] = useState(false);
 
   function handleError(err) {
-    setMessage({ msg: err.error, type: 'danger' });
+    if (err.errors) {
+      setMessage({ msg: err.errors[0].msg + ': ' + err.errors[0].param, type: 'danger' });
+    } else {
+      setMessage({ msg: err.error, type: 'danger' });
+    }
     console.log(err);
   }
 
@@ -84,20 +88,26 @@ function App2() {
   }, [dirty]);
 
   const addStudyPlan = async (sp) => {
-
+    // se c'è già un piano di studi
     if (studyPlan.length) {
-      // i need to delete the old study plan before adding the new one
+      // devo cancellare il piano vecchio prima di aggiungerne uno nuovo
       await API.deleteStudyPlan()
         .then(() => {
           setStudyPlan([]);
         }).catch(err => handleError(err));
     }
 
-    API.addStudyPlan(sp)
+    // aggiorno l'iscrizione
+    await API.updateUserEnrollment(user.isFullTime)
+      .then(() => {
+        //setMessage({ msg: 'Enrollment updated successfully', type: 'success' });
+      }).catch(err => handleError(err));
+
+    // aggiungo il nuovo piano di studi
+    API.addStudyPlan({ courses: sp })
       .then(() => {
         setStudyPlan(sp);
         setDirty(true);
-        updateEnrollment();
         setMessage({ msg: 'Study plan added successfully', type: 'success' });
       }).catch(err => handleError(err));
   }
@@ -108,13 +118,6 @@ function App2() {
         setStudyPlan([]);
         setDirty(true);
         setMessage({ msg: 'Study plan deleted successfully', type: 'success' });
-      }).catch(err => handleError(err));
-  }
-
-  const updateEnrollment = () => {
-    API.updateUserEnrollment(user.isFullTime)
-      .then(() => {
-        //setMessage({ msg: 'Enrollment updated successfully', type: 'success' });
       }).catch(err => handleError(err));
   }
 

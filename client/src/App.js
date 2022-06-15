@@ -218,7 +218,7 @@ function App2() {
                   incompatibilities={incompatibilities}
                   editing={false}
                   title={"List of Available Courses"}
-                  planTmp={planTmp} />
+                  planTmp={studyPlan} />
               </>)}
           />
           <Route path='/login' element={
@@ -237,6 +237,7 @@ function App2() {
                   fullTime={user.isFullTime}
                   incompatibilities={incompatibilities}
                   addStudyPlan={addStudyPlan}
+                  resetPlanTmp={()=>setPlanTmp(studyPlan ? studyPlan : [])}
                 />
 
                 <br />

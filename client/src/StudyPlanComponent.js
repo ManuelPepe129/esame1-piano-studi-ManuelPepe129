@@ -81,6 +81,7 @@ function StudyPlanTableWrapper(props) {
                         planTmp={props.planTmp}
                         incompatibilities={props.incompatibilities}
                         addStudyPlan={props.addStudyPlan}
+                        resetPlanTmp={props.resetPlanTmp}
                         currentCredits={currentCredits} maxCredits={maxCredits} minCredits={minCredits} />
                 </Col>
             </Row>
@@ -162,7 +163,7 @@ function StudyPlanTableActions(props) {
         props.editing ?
             <>
                 <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>{' '}
-                <Button variant='warning' onClick={() => navigate('/')}>Cancel</Button>
+                <Button variant='warning' onClick={() => { navigate('/'); props.resetPlanTmp() }}>Cancel</Button>
             </> :
             <>
                 <Button variant='primary' onClick={() => navigate('/edit')}>Edit current study plan</Button>{' '}

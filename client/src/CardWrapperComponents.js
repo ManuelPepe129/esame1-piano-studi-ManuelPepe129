@@ -20,6 +20,7 @@ function StudyPlanTableCard(props) {
                     updateMessage={props.updateMessage}
                     incompatibilities={props.incompatibilities}
                     addStudyPlan={props.addStudyPlan}
+                    resetPlanTmp={props.resetPlanTmp}
                 />
             </Card.Body>
         </Card>

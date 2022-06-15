@@ -23,6 +23,7 @@ function App2() {
   const [loggedIn, setLoggedIn] = useState(false);  // no user is logged in when app loads
   const [user, setUser] = useState({});
   const [studyPlan, setStudyPlan] = useState([]);
+  const [planTmp, setPlanTmp] = useState(studyPlan ? studyPlan : []);
   const [message, setMessage] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
   const [dirty, setDirty] = useState(false);
@@ -52,11 +53,13 @@ function App2() {
         .then((sp) => {
           if (sp.length === 0) {
             setStudyPlan(sp);
+            setPlanTmp([]);
           } else {
             const courses_tmp = courses.filter(course => sp.find(c => c.course === course.code))
               .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
 
             setStudyPlan(courses_tmp);
+            setPlanTmp(courses_tmp);
           }
         })
         .catch(err => handleError(err));
@@ -88,13 +91,14 @@ function App2() {
     }
   }, [dirty]);
 
-  const addStudyPlan = async (sp) => {
+  const addStudyPlan = async () => {
     // se c'è già un piano di studi
     if (studyPlan.length) {
       // devo cancellare il piano vecchio prima di aggiungerne uno nuovo
       await API.deleteStudyPlan()
         .then(() => {
           setStudyPlan([]);
+          setPlanTmp([]);
         }).catch(err => handleError(err));
     }
 
@@ -105,9 +109,9 @@ function App2() {
       }).catch(err => handleError(err));
 
     // aggiungo il nuovo piano di studi
-    API.addStudyPlan({ courses: sp })
+    API.addStudyPlan({ courses: planTmp })
       .then(() => {
-        setStudyPlan(sp);
+        setStudyPlan(planTmp);
         setDirty(true);
         setMessage({ msg: 'Study plan added successfully', type: 'success' });
       }).catch(err => handleError(err));
@@ -153,6 +157,35 @@ function App2() {
     setUser(newUser);
   }
 
+
+  const addCourseToPlan = (course) => {
+    // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
+    setPlanTmp((oldCourses) => [...oldCourses, course]);
+    const newCourse = {
+      code: course.code,
+      name: course.name,
+      credits: course.credits,
+      propedeuticcourse: course.propedeuticcourse,
+      studentsenrolled: course.studentsenrolled + 1,
+      maxstudentsenrolled: course.maxstudentsenrolled
+    };
+    updateStudentsEnrolled(newCourse);
+
+  }
+
+  const removeCourseToPlan = (course) => {
+    setPlanTmp(planTmp.filter((c) => c.code !== course.code));
+    const newCourse = {
+      code: course.code,
+      name: course.name,
+      credits: course.credits,
+      propedeuticcourse: course.propedeuticcourse,
+      studentsenrolled: course.studentsenrolled - 1,
+      maxstudentsenrolled: course.maxstudentsenrolled
+    };
+    updateStudentsEnrolled(newCourse);
+  }
+
   return (
     <>
       <MyNavbar loggedIn={loggedIn} user={user} doLogout={doLogout}></MyNavbar>
@@ -168,7 +201,7 @@ function App2() {
                 {loggedIn ?
                   <>
                     {studyPlan.length ?
-                      <StudyPlanTableCard courses={studyPlan} deleteStudyPlan={deleteStudyPlan} />
+                      <StudyPlanTableCard courses={studyPlan} deleteStudyPlan={deleteStudyPlan} fullTime={user.isFullTime} planTmp={planTmp} editing={false} />
                       :
                       <StudyPlanOptionFormCard updateFullTime={setFullTime} />
                     }
@@ -176,7 +209,7 @@ function App2() {
                   </>
                   : false
                 }
-                <MainComponentCard courses={courses} incompatibilities={incompatibilities} editing={false} title={"List of Available Courses"} />
+                <MainComponentCard courses={courses} incompatibilities={incompatibilities} editing={false} title={"List of Available Courses"} setPlanTmp={setPlanTmp} planTmp={planTmp} />
               </>)}
           />
           <Route path='/login' element={
@@ -185,8 +218,34 @@ function App2() {
           } />
           <Route path='/edit' element={
             loggedIn ?
-              <MainComponentCard title={"Edit Current Study Plan"} courses={courses} updateStudentsEnrolled={updateStudentsEnrolled} incompatibilities={incompatibilities} editing={true} fullTime={user.isFullTime} addStudyPlan={addStudyPlan} studyPlan={studyPlan} updateMessage={setMessage} />
-              : <Navigate to='/login' />
+              <>
+                <StudyPlanTableCard
+                  courses={planTmp}
+                  deleteStudyPlan={deleteStudyPlan}
+                  editing={true}
+                  planTmp={planTmp}
+                  updateMessage={setMessage}
+                  fullTime={user.isFullTime}
+                  incompatibilities={incompatibilities}
+                  addStudyPlan={addStudyPlan}
+                />
+
+                <br />
+
+                <MainComponentCard title={"Edit Current Study Plan"}
+                  courses={courses}
+                  updateStudentsEnrolled={updateStudentsEnrolled}
+                  incompatibilities={incompatibilities}
+                  editing={true}
+                  fullTime={user.isFullTime}
+                  addStudyPlan={addStudyPlan}
+                  studyPlan={studyPlan}
+                  updateMessage={setMessage}
+                  setPlanTmp={setPlanTmp}
+                  addCourseToPlan={addCourseToPlan}
+                  removeCourseToPlan={removeCourseToPlan}
+                  planTmp={planTmp} />
+              </> : <Navigate to='/login' />
           } />
           < Route path='*' element={<h1>Page not found</h1>} />
         </Routes>

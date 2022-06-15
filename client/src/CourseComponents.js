@@ -8,53 +8,9 @@ import { useState } from 'react';
 // TODO: check sul numero massimo di studenti iscritti
 // FIXME: check quando si rimuove un corso propedeutico (fare i check anche nel submit del form)
 
-function MainComponent(props) {
-    return (
-        <Row>
-            <Col>
-                <CoursesTable courses={props.courses} updateStudentsEnrolled={props.updateStudentsEnrolled} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime}
-                    studyPlan={props.studyPlan} addStudyPlan={props.addStudyPlan} updateMessage={props.updateMessage}></CoursesTable>
-            </Col>
-        </Row>
-    );
-}
-
 function CoursesTable(props) {
-    const [planTmp, setPlanTmp] = useState(props.studyPlan ? props.studyPlan : []);
-
     const navigate = useNavigate();
 
-    const currentCredits = planTmp.reduce((count, c) => count + c.credits, 0)
-    const maxCredits = props.fullTime ? 80 : 40;
-    const minCredits = props.fullTime ? 40 : 20;
-
-    const addCourseToPlan = (course) => {
-        // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
-        setPlanTmp((oldCourses) => [...oldCourses, course]);
-        const newCourse = {
-            code: course.code,
-            name: course.name,
-            credits: course.credits,
-            propedeuticcourse: course.propedeuticcourse,
-            studentsenrolled: course.studentsenrolled + 1,
-            maxstudentsenrolled: course.maxstudentsenrolled
-        };
-        props.updateStudentsEnrolled(newCourse);
-
-    }
-
-    const removeCourseToPlan = (course) => {
-        setPlanTmp(planTmp.filter((c) => c.code !== course.code));
-        const newCourse = {
-            code: course.code,
-            name: course.name,
-            credits: course.credits,
-            propedeuticcourse: course.propedeuticcourse,
-            studentsenrolled: course.studentsenrolled - 1,
-            maxstudentsenrolled: course.maxstudentsenrolled
-        };
-        props.updateStudentsEnrolled(newCourse);
-    }
 
     function calculateIncompatibilities(course) {
         let tmp = [];
@@ -69,76 +25,8 @@ function CoursesTable(props) {
         return tmp;
     }
 
-
-    function handleStudyPlanUpdate() {
-        if (checkCredits()) {
-            if (checkPropedeuticCourses()) {
-                if (checkIncompatibleCourses()) {
-                    props.addStudyPlan(planTmp);
-                    navigate('/');
-                } else {
-                    props.updateMessage({ msg: "Some courses are not compatible", type: 'warning' });
-                }
-            } else {
-                props.updateMessage({ msg: "Missing propedeutic course", type: 'warning' });
-            }
-        } else {
-            props.updateMessage({ msg: `Insert between ${minCredits} and ${maxCredits} credits`, type: 'warning' });
-        }
-    }
-
-    /* Checks on submission */
-
-
-    function checkCredits() {
-        if (currentCredits >= minCredits && currentCredits <= maxCredits) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function checkPropedeuticCourses() {
-        for (const course of planTmp) {
-            if (course.propedeuticcourse) {
-                if (!planTmp.find(c => c.code === course.propedeuticcourse)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function checkIncompatibleCourses() {
-        for (const course of planTmp) {
-            const incompatibilities = calculateIncompatibilities(course);
-            for (const incompatible of incompatibilities) {
-                if (planTmp.find(c => c.code === incompatible)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
     return (
         <>
-            {props.editing ?
-                <>
-                    <Row><p>Insert between {minCredits} and {maxCredits} credits</p></Row>
-
-                    <Row>
-                        <p> Credits in current study plan: {currentCredits}</p>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>{' '}
-                            <Button variant='warning' onClick={() => navigate('/')}>Cancel</Button>
-                        </Col>
-                    </Row>
-                </>
-                : false}
             <Row>
                 <Col>
                     <Table>
@@ -157,9 +45,9 @@ function CoursesTable(props) {
                                     <CourseRow course={course} key={course.code}
                                         incompatibilities={calculateIncompatibilities(course)}
                                         editing={props.editing}
-                                        planTmp={planTmp}
-                                        addCourseToPlan={addCourseToPlan}
-                                        removeCourseToPlan={removeCourseToPlan}
+                                        planTmp={props.planTmp}
+                                        addCourseToPlan={props.addCourseToPlan}
+                                        removeCourseToPlan={props.removeCourseToPlan}
                                     />)
                             }
                         </tbody>
@@ -292,4 +180,4 @@ function CourseDetails(props) {
     )
 }
 
-export { MainComponent };
+export { CoursesTable };

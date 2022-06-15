@@ -98,7 +98,6 @@ function App2() {
       await API.deleteStudyPlan()
         .then(() => {
           setStudyPlan([]);
-          setPlanTmp([]);
         }).catch(err => handleError(err));
     }
 
@@ -201,7 +200,12 @@ function App2() {
                 {loggedIn ?
                   <>
                     {studyPlan.length ?
-                      <StudyPlanTableCard courses={studyPlan} deleteStudyPlan={deleteStudyPlan} fullTime={user.isFullTime} planTmp={planTmp} editing={false} />
+                      <StudyPlanTableCard 
+                      courses={studyPlan} 
+                      deleteStudyPlan={deleteStudyPlan} 
+                      fullTime={user.isFullTime} 
+                      planTmp={planTmp} 
+                      editing={false} />
                       :
                       <StudyPlanOptionFormCard updateFullTime={setFullTime} />
                     }
@@ -209,7 +213,12 @@ function App2() {
                   </>
                   : false
                 }
-                <MainComponentCard courses={courses} incompatibilities={incompatibilities} editing={false} title={"List of Available Courses"} setPlanTmp={setPlanTmp} planTmp={planTmp} />
+                <MainComponentCard
+                  courses={courses}
+                  incompatibilities={incompatibilities}
+                  editing={false}
+                  title={"List of Available Courses"}
+                  planTmp={planTmp} />
               </>)}
           />
           <Route path='/login' element={
@@ -234,14 +243,9 @@ function App2() {
 
                 <MainComponentCard title={"Edit Current Study Plan"}
                   courses={courses}
-                  updateStudentsEnrolled={updateStudentsEnrolled}
                   incompatibilities={incompatibilities}
                   editing={true}
-                  fullTime={user.isFullTime}
-                  addStudyPlan={addStudyPlan}
-                  studyPlan={studyPlan}
                   updateMessage={setMessage}
-                  setPlanTmp={setPlanTmp}
                   addCourseToPlan={addCourseToPlan}
                   removeCourseToPlan={removeCourseToPlan}
                   planTmp={planTmp} />

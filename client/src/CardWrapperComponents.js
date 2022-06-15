@@ -43,7 +43,13 @@ function MainComponentCard(props) {
                 <Card>
                     <Card.Body>
                         <Card.Title>{props.title}</Card.Title>
-                        <CoursesTable courses={props.courses} planTmp={props.planTmp} updateStudentsEnrolled={props.updateStudentsEnrolled} incompatibilities={props.incompatibilities} editing={props.editing} fullTime={props.fullTime} addStudyPlan={props.addStudyPlan} studyPlan={props.studyPlan} updateMessage={props.updateMessage} setPlanTmp={props.setPlanTmp} addCourseToPlan={props.addCourseToPlan} removeCourseToPlan={props.removeCourseToPlan} />
+                        <CoursesTable courses={props.courses}
+                            planTmp={props.planTmp}
+                            incompatibilities={props.incompatibilities}
+                            editing={props.editing}
+                            updateMessage={props.updateMessage}
+                            addCourseToPlan={props.addCourseToPlan}
+                            removeCourseToPlan={props.removeCourseToPlan} />
                     </Card.Body>
                 </Card>
             </Col>

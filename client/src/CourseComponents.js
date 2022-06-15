@@ -1,7 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Col, Row, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 // TODO: aggiungere "non puoi aggiungere questo corso perché ecc..."
@@ -9,7 +8,6 @@ import { useState } from 'react';
 // FIXME: check quando si rimuove un corso propedeutico (fare i check anche nel submit del form)
 
 function CoursesTable(props) {
-    const navigate = useNavigate();
 
 
     function calculateIncompatibilities(course) {

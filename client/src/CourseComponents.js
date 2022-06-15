@@ -125,7 +125,7 @@ function CourseActions(props) {
 
     return (
         <td>
-            <Button onClick={() => { props.toggleDisplayDetails(); }} variant="outline-secondary">{props.displayDetails ? <CaretUp /> : <CaretDown />}</Button>
+            <Button onClick={() => { props.toggleDisplayDetails(); }} variant="outline-secondary">{props.displayDetails ? <CaretUp /> : <CaretDown />}</Button>{' '}
             {props.editing ?
                 disabled ?
                     <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >{message}</Tooltip>}>

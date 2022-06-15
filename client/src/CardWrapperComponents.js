@@ -15,12 +15,12 @@ function StudyPlanTableCard(props) {
                     courses={props.courses}
                     deleteStudyPlan={props.deleteStudyPlan}
                     fullTime={props.fullTime}
-                    planTmp={props.planTmp}
+                    studyPlan={props.studyPlan}
                     editing={props.editing}
                     updateMessage={props.updateMessage}
                     incompatibilities={props.incompatibilities}
                     addStudyPlan={props.addStudyPlan}
-                    resetPlanTmp={props.resetPlanTmp}
+                    reset={props.reset}
                 />
             </Card.Body>
         </Card>
@@ -46,7 +46,7 @@ function MainComponentCard(props) {
                     <Card.Body>
                         <Card.Title>{props.title}</Card.Title>
                         <CoursesTable courses={props.courses}
-                            planTmp={props.planTmp}
+                            studyPlan={props.studyPlan}
                             incompatibilities={props.incompatibilities}
                             editing={props.editing}
                             updateMessage={props.updateMessage}

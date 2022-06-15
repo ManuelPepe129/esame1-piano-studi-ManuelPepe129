@@ -43,7 +43,7 @@ function CoursesTable(props) {
                                     <CourseRow course={course} key={course.code}
                                         incompatibilities={calculateIncompatibilities(course)}
                                         editing={props.editing}
-                                        planTmp={props.planTmp}
+                                        studyPlan={props.studyPlan}
                                         addCourseToPlan={props.addCourseToPlan}
                                         removeCourseToPlan={props.removeCourseToPlan}
                                     />)
@@ -59,11 +59,10 @@ function CoursesTable(props) {
 
 function CourseRow(props) {
     const [displayDetails, setDisplayDetails] = useState(false);
-    // const inStudyPlan = props.planTmp.find(c => c.code === props.course.code) ? true : false;
 
     let statusClass = null;
 
-    if (props.planTmp.find(c => c.code === props.course.code)) {
+    if (props.studyPlan.find(c => c.code === props.course.code)) {
         statusClass = 'table-primary';
     }
 
@@ -76,7 +75,7 @@ function CourseRow(props) {
         <>
             <tr className={statusClass}>
                 <CourseData course={props.course} />
-                <CourseActions course={props.course} toggleDisplayDetails={toggleDisplayDetails} incompatibilities={props.incompatibilities} displayDetails={displayDetails} editing={props.editing} planTmp={props.planTmp} action={props.planTmp.find(c => c.code === props.course.code) ? props.removeCourseToPlan : props.addCourseToPlan} />
+                <CourseActions course={props.course} toggleDisplayDetails={toggleDisplayDetails} incompatibilities={props.incompatibilities} displayDetails={displayDetails} editing={props.editing} studyPlan={props.studyPlan} action={props.studyPlan.find(c => c.code === props.course.code) ? props.removeCourseToPlan : props.addCourseToPlan} />
             </tr>
             {
                 displayDetails ?
@@ -92,7 +91,7 @@ function CourseActions(props) {
 
     function checkIncompatibilities() {
         for (const inc of props.incompatibilities) {
-            if (props.planTmp.find(c => c.code === inc)) {
+            if (props.studyPlan.find(c => c.code === inc)) {
                 message = `This course is incompatible with ${inc}`;
                 return true;
             }
@@ -102,7 +101,7 @@ function CourseActions(props) {
 
     function checkPropedeuticCourses() {
         if (props.course.propedeuticcourse) {
-            if (props.planTmp.find(c => c.code === props.course.propedeuticcourse)) {
+            if (props.studyPlan.find(c => c.code === props.course.propedeuticcourse)) {
                 return false;
             } else {
                 message = `Please add propedeutic course ${props.course.propedeuticcourse}`;
@@ -130,10 +129,10 @@ function CourseActions(props) {
                 disabled ?
                     <OverlayTrigger overlay={<Tooltip id="tooltip-disabled" >{message}</Tooltip>}>
                         <span className="d-inline-block">
-                            <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.planTmp.find(c => c.code === props.course.code) ? <Dash /> : <Plus />} </Button>
+                            <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.studyPlan.find(c => c.code === props.course.code) ? <Dash /> : <Plus />} </Button>
                         </span>
                     </OverlayTrigger>
-                    : <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.planTmp.find(c => c.code === props.course.code) ? <Dash /> : <Plus />} </Button>
+                    : <Button disabled={disabled} onClick={() => props.action(props.course)}> {props.studyPlan.find(c => c.code === props.course.code) ? <Dash /> : <Plus />} </Button>
 
                 : false}
         </td>

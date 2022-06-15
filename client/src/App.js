@@ -23,7 +23,6 @@ function App2() {
   const [loggedIn, setLoggedIn] = useState(false);  // no user is logged in when app loads
   const [user, setUser] = useState({});
   const [studyPlan, setStudyPlan] = useState([]);
-  const [planTmp, setPlanTmp] = useState(studyPlan ? studyPlan : []);
   const [message, setMessage] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
   const [dirty, setDirty] = useState(false);
@@ -53,13 +52,14 @@ function App2() {
         .then((sp) => {
           if (sp.length === 0) {
             setStudyPlan(sp);
-            setPlanTmp([]);
           } else {
             const courses_tmp = courses.filter(course => sp.find(c => c.course === course.code))
-              .map((course) => ({ code: course.code, name: course.name, credits: course.credits }));
+              .map((course) => ({
+                code: course.code, name: course.name, credits: course.credits, propedeuticcourse: course.propedeuticcourse,
+                studentsenrolled: course.studentsenrolled, maxstudentsenrolled: course.maxstudentsenrolled
+              }));
 
             setStudyPlan(courses_tmp);
-            setPlanTmp(courses_tmp);
           }
         })
         .catch(err => handleError(err));
@@ -85,6 +85,22 @@ function App2() {
       API.getAllCourses()
         .then(courses => {
           setCourses(courses);
+
+          API.getStudyPlan()
+            .then((sp) => {
+              if (sp.length === 0) {
+                setStudyPlan(sp);
+              } else {
+                const courses_tmp = courses.filter(course => sp.find(c => c.course === course.code))
+                  .map((course) => ({
+                    code: course.code, name: course.name, credits: course.credits, propedeuticcourse: course.propedeuticcourse,
+                    studentsenrolled: course.studentsenrolled, maxstudentsenrolled: course.maxstudentsenrolled
+                  }));
+
+                setStudyPlan(courses_tmp);
+              }
+            })
+            .catch(err => handleError(err));
           setDirty(false);
         })
         .catch(err => handleError(err));
@@ -108,9 +124,8 @@ function App2() {
       }).catch(err => handleError(err));
 
     // aggiungo il nuovo piano di studi
-    API.addStudyPlan({ courses: planTmp })
+    API.addStudyPlan({ courses: studyPlan })
       .then(() => {
-        setStudyPlan(planTmp);
         setDirty(true);
         setMessage({ msg: 'Study plan added successfully', type: 'success' });
       }).catch(err => handleError(err));
@@ -159,7 +174,7 @@ function App2() {
 
   const addCourseToPlan = (course) => {
     // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
-    setPlanTmp((oldCourses) => [...oldCourses, course]);
+    setStudyPlan((oldCourses) => [...oldCourses, course]);
     const newCourse = {
       code: course.code,
       name: course.name,
@@ -173,7 +188,7 @@ function App2() {
   }
 
   const removeCourseToPlan = (course) => {
-    setPlanTmp(planTmp.filter((c) => c.code !== course.code));
+    setStudyPlan(studyPlan.filter((c) => c.code !== course.code));
     const newCourse = {
       code: course.code,
       name: course.name,
@@ -200,12 +215,12 @@ function App2() {
                 {loggedIn ?
                   <>
                     {studyPlan.length ?
-                      <StudyPlanTableCard 
-                      courses={studyPlan} 
-                      deleteStudyPlan={deleteStudyPlan} 
-                      fullTime={user.isFullTime} 
-                      planTmp={planTmp} 
-                      editing={false} />
+                      <StudyPlanTableCard
+                        courses={studyPlan}
+                        deleteStudyPlan={deleteStudyPlan}
+                        fullTime={user.isFullTime}
+                        studyPlan={studyPlan}
+                        editing={false} />
                       :
                       <StudyPlanOptionFormCard updateFullTime={setFullTime} />
                     }
@@ -218,7 +233,7 @@ function App2() {
                   incompatibilities={incompatibilities}
                   editing={false}
                   title={"List of Available Courses"}
-                  planTmp={studyPlan} />
+                  studyPlan={studyPlan} />
               </>)}
           />
           <Route path='/login' element={
@@ -229,15 +244,15 @@ function App2() {
             loggedIn ?
               <>
                 <StudyPlanTableCard
-                  courses={planTmp}
+                  courses={studyPlan}
                   deleteStudyPlan={deleteStudyPlan}
                   editing={true}
-                  planTmp={planTmp}
+                  studyPlan={studyPlan}
                   updateMessage={setMessage}
                   fullTime={user.isFullTime}
                   incompatibilities={incompatibilities}
                   addStudyPlan={addStudyPlan}
-                  resetPlanTmp={()=>setPlanTmp(studyPlan ? studyPlan : [])}
+                  reset={() => setDirty(true)}
                 />
 
                 <br />
@@ -249,7 +264,7 @@ function App2() {
                   updateMessage={setMessage}
                   addCourseToPlan={addCourseToPlan}
                   removeCourseToPlan={removeCourseToPlan}
-                  planTmp={planTmp} />
+                  studyPlan={studyPlan} />
               </> : <Navigate to='/login' />
           } />
           < Route path='*' element={<h1>Page not found</h1>} />

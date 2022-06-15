@@ -57,7 +57,7 @@ function StudyPlanOptionForm(props) {
 }
 
 function StudyPlanTableWrapper(props) {
-    const currentCredits = props.planTmp.reduce((count, c) => count + c.credits, 0)
+    const currentCredits = props.studyPlan.reduce((count, c) => count + c.credits, 0)
     const maxCredits = props.fullTime ? 80 : 40;
     const minCredits = props.fullTime ? 40 : 20;
 
@@ -78,10 +78,10 @@ function StudyPlanTableWrapper(props) {
                         deleteStudyPlan={props.deleteStudyPlan}
                         editing={props.editing}
                         updateMessage={props.updateMessage}
-                        planTmp={props.planTmp}
+                        studyPlan={props.studyPlan}
                         incompatibilities={props.incompatibilities}
                         addStudyPlan={props.addStudyPlan}
-                        resetPlanTmp={props.resetPlanTmp}
+                        reset={props.reset}
                         currentCredits={currentCredits} maxCredits={maxCredits} minCredits={minCredits} />
                 </Col>
             </Row>
@@ -124,9 +124,9 @@ function StudyPlanTableActions(props) {
     }
 
     function checkPropedeuticCourses() {
-        for (const course of props.planTmp) {
+        for (const course of props.studyPlan) {
             if (course.propedeuticcourse) {
-                if (!props.planTmp.find(c => c.code === course.propedeuticcourse)) {
+                if (!props.studyPlan.find(c => c.code === course.propedeuticcourse)) {
                     return false;
                 }
             }
@@ -148,10 +148,10 @@ function StudyPlanTableActions(props) {
     }
 
     function checkIncompatibleCourses() {
-        for (const course of props.planTmp) {
+        for (const course of props.studyPlan) {
             const incompatibilities = calculateIncompatibilities(course);
             for (const incompatible of incompatibilities) {
-                if (props.planTmp.find(c => c.code === incompatible)) {
+                if (props.studyPlan.find(c => c.code === incompatible)) {
                     return false;
                 }
             }
@@ -163,7 +163,7 @@ function StudyPlanTableActions(props) {
         props.editing ?
             <>
                 <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>{' '}
-                <Button variant='warning' onClick={() => { navigate('/'); props.resetPlanTmp() }}>Cancel</Button>
+                <Button variant='warning' onClick={() => { navigate('/'); props.reset()}}>Cancel</Button>
             </> :
             <>
                 <Button variant='primary' onClick={() => navigate('/edit')}>Edit current study plan</Button>{' '}

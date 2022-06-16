@@ -3,9 +3,8 @@ import { Table, Col, Row, Button, OverlayTrigger, Tooltip } from 'react-bootstra
 import { CaretDown, CaretUp, Plus, Dash } from 'react-bootstrap-icons';
 import { useState } from 'react';
 
-// TODO: aggiungere "non puoi aggiungere questo corso perché ecc..."
-// TODO: check sul numero massimo di studenti iscritti
 // FIXME: check quando si rimuove un corso propedeutico (fare i check anche nel submit del form)
+// TODO: Consente di rimuovere un corso dal piano di studi, se ciò non viola alcun vincolo di propedeuticità (altrimenti, l’applicazione deve mostrare la ragione)
 
 function CoursesTable(props) {
 
@@ -24,7 +23,6 @@ function CoursesTable(props) {
     }
 
     return (
-        <>
             <Row>
                 <Col>
                     <Table>
@@ -52,7 +50,6 @@ function CoursesTable(props) {
                     </Table>
                 </Col>
             </Row>
-        </>
     );
 
 }
@@ -120,7 +117,19 @@ function CourseActions(props) {
         return false;
     }
 
-    const disabled = (checkIncompatibilities() || checkPropedeuticCourses() || checkMaxStudentsEnrolled());
+    function checkIsPropedeutic(){
+        for(const course of props.studyPlan)
+        {
+            if(course.propedeuticcourse === props.course.code)
+            {
+                message = `This course is propedeutic for ${course.code}`;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const disabled = (checkIncompatibilities() || checkPropedeuticCourses() || checkMaxStudentsEnrolled() || checkIsPropedeutic());
 
     return (
         <td>

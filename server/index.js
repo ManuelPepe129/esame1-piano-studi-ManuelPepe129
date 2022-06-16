@@ -113,8 +113,20 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
 });
 
 // POST /api/studyplan
-// TODO: check incompatibilities
 app.post('/api/studyplan', isLoggedIn, [
+    check('courses').custom((studyplan) => {
+        // check incompatibilities
+        return dao.listIncompatibilities()
+            .then(incompatibilities => {
+                for (const inc of incompatibilities) {
+                    if (studyplan.find(c => c.code === inc.codea) && studyplan.find(c => c.code === inc.codeb)) {
+                        throw new Error(`Courses ${inc.codea} and ${inc.codeb} are incompatible`);
+                    }
+                }
+            }).catch((err) => {
+                throw new Error(err);
+            })
+    }),
     check('courses').custom((studyplan, { req }) => {
         return dao.listCourses()
             .then(courses => {
@@ -134,8 +146,7 @@ app.post('/api/studyplan', isLoggedIn, [
                 }
 
                 // check propedeutics
-
-                for (let course of realstudyplan) {
+                for (const course of realstudyplan) {
                     if (course.propedeuticcourse) {
                         if (!realstudyplan.find(c => c.code === course.propedeuticcourse)) {
                             throw new Error(`Missing propedeutic course ${course.propedeuticcourse} for course ${course.code}`);
@@ -157,7 +168,7 @@ app.post('/api/studyplan', isLoggedIn, [
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array()});
+        return res.status(422).json({ errors: errors.array() });
     }
 
     try {

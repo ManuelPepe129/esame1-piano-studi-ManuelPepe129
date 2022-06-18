@@ -114,6 +114,8 @@ app.get('/api/studyplan', isLoggedIn, async (req, res) => {
 
 // POST /api/studyplan
 app.post('/api/studyplan', isLoggedIn, [
+    check('courses.*.code').isString().isLength({ min: 7, max: 7 }),
+    check('courses').isArray(),
     check('courses').custom((studyplan) => {
         // check incompatibilities
         return dao.listIncompatibilities()

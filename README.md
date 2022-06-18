@@ -189,7 +189,7 @@
 - username: `test@polito.it`, password: `password`. Default user to test web app functionalities
 - username: `manuel.pepe@polito.it`, password: `pwd123`. Part-time student
 - username: `andrea.neri@polito.it`, password: `4ndr34n3r1`. Full-time student
-- username: `mario.rossi@polito.it`, password: `m4r10r0ss1`. Full-time student
+- username: `mario.rossi@polito.it`, password: `m4r10r0ss1`. Part-time student
 - username: `paola.verdi@polito.it`, password: `hwrg27@!`. Full-time student
 
 - username, password (plus any other requested info)

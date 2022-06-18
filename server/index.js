@@ -121,8 +121,8 @@ app.post('/api/studyplan', isLoggedIn, [
         return dao.listIncompatibilities()
             .then(incompatibilities => {
                 for (const inc of incompatibilities) {
-                    if (studyplan.find(c => c.code === inc.codea) && studyplan.find(c => c.code === inc.codeb)) {
-                        throw new Error(`Courses ${inc.codea} and ${inc.codeb} are incompatible`);
+                    if (studyplan.find(c => c.code === inc.coursea) && studyplan.find(c => c.code === inc.courseb)) {
+                        throw new Error(`Courses ${inc.coursea} and ${inc.courseb} are incompatible`);
                     }
                 }
             }).catch((err) => {

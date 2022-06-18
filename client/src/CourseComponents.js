@@ -107,7 +107,7 @@ function CourseActions(props) {
     }
 
     function checkMaxStudentsEnrolled() {
-        if (props.course.maxstudentsenrolled && (props.course.studentsenrolled >= props.course.maxstudentsenrolled)) {
+        if (props.course.maxstudentsenrolled && (props.course.studentsenrolled >= props.course.maxstudentsenrolled) && !props.studyPlan.find(c => c.code === props.course.code)) {
             message = `Course reached max students enrolled`;
             return true;
         }

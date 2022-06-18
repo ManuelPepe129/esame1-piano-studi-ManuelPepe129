@@ -29,7 +29,7 @@ function App2() {
 
   function handleError(err) {
     if (err.errors) {
-      setMessage({ msg: err.errors[0].msg + ': ' + err.errors[0].param, type: 'danger' });
+      setMessage({ msg: err.errors[0].msg, type: 'danger' });
     } else {
       setMessage({ msg: err.error, type: 'danger' });
     }

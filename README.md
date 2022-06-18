@@ -174,7 +174,6 @@
 
 ## Main React Components
 
-- `MainComponent` (in `CourseComponents.js`): acts as a wrapper for the main page, rendering the available university courses table
 - `CoursesTable` (in `CourseComponents.js`): table rendering all the courses available, with the possibility to be expanded to show propedeutic and incompatible courses
 - `LoginForm` (in `LoginComponents.js`): form to log in
 - `StudyPlanTable` (in `StudyPlanComponents.js`): table rendering all the courses in current study plan

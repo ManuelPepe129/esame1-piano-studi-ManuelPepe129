@@ -2,7 +2,7 @@ import './App.css';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Alert } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import API from './API';
 import { MyNavbar } from './MyNavbar';
 import { MyAlert } from './AlertComponent';
@@ -47,6 +47,20 @@ function App2() {
   }, []);
 
   useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // here you have the user info, if already logged in
+        const user = await API.getUserInfo();
+        setLoggedIn(true);
+        setUser(user);
+      } catch (err) {
+        //handleError(err);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
     if (loggedIn && !initialLoading) {
       API.getStudyPlan()
         .then((sp) => {
@@ -64,21 +78,9 @@ function App2() {
         })
         .catch(err => handleError(err));
     }
-  }, [loggedIn, initialLoading]);
+  }, [loggedIn, initialLoading, courses.length]);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // here you have the user info, if already logged in
-        const user = await API.getUserInfo();
-        setLoggedIn(true);
-        setUser(user);
-      } catch (err) {
-        //handleError(err);
-      }
-    };
-    checkAuth();
-  }, []);
+
 
   useEffect(() => {
     if (dirty) {

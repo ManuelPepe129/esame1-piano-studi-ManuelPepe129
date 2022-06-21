@@ -84,10 +84,12 @@ function App2() {
 
   useEffect(() => {
     if (dirty) {
+      // ottiene la lista di tutti i corsi
       API.getAllCourses()
         .then(courses => {
           setCourses(courses);
 
+          // ottiene il piano di studi dell'utente attuale
           API.getStudyPlan()
             .then((sp) => {
               if (sp.length === 0) {
@@ -212,7 +214,7 @@ function App2() {
         <br />
         <Routes>
           <Route path='/' element={
-            initialLoading ? <Loading /> :
+            initialLoading || dirty ? <Loading /> :
               (<>
                 {loggedIn ?
                   <>

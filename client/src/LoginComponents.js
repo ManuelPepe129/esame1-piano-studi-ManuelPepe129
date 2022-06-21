@@ -1,17 +1,20 @@
 import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 function LoginForm(props) {
   const [username, setUsername] = useState('test@polito.it');
   const [password, setPassword] = useState('password');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrorMessage('');
     const credentials = { username, password };
 
-    // SOME VALIDATION, ADD MORE!!!
     let valid = true;
     let message = '';
     if (username === '') {
@@ -21,7 +24,6 @@ function LoginForm(props) {
       valid = false;
       message = 'Error: empty password';
     }
-
 
     if (valid) {
       props.login(credentials);
@@ -35,7 +37,7 @@ function LoginForm(props) {
     <Container>
       <Row>
         <Col>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             {errorMessage ? <Alert variant='danger'>{errorMessage}</Alert> : ''}
             <Form.Group controlId='username'>
               <Form.Label>email</Form.Label>
@@ -45,7 +47,12 @@ function LoginForm(props) {
               <Form.Label>Password</Form.Label>
               <Form.Control type='password' value={password} onChange={ev => setPassword(ev.target.value)} />
             </Form.Group>
-            <Button onClick={handleSubmit}>Login</Button>
+            <Form.Group>
+              <Button type="submit">Login</Button>{' '}
+              <Button variant="secondary" onClick={() => navigate('/')}>
+                Cancel
+              </Button>
+            </Form.Group>
           </Form>
         </Col>
       </Row>

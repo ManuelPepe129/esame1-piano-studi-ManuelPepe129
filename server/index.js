@@ -214,7 +214,7 @@ app.put('/api/studyplan/enrollment', isLoggedIn, [
 
 /** Users APIs **/
 
-// POST /sessions 
+// POST /api/sessions 
 // login
 app.post('/api/sessions', function (req, res, next) {
     passport.authenticate('local', (err, user, info) => {
@@ -236,13 +236,13 @@ app.post('/api/sessions', function (req, res, next) {
     })(req, res, next);
 });
 
-// DELETE /sessions/current 
+// DELETE /api/sessions/current 
 // logout
 app.delete('/api/sessions/current', (req, res) => {
     req.logout(() => { res.end(); });
 });
 
-// GET /sessions/current
+// GET /api/sessions/current
 // check whether the user is logged in or not
 app.get('/api/sessions/current', (req, res) => {
     if (req.isAuthenticated()) {

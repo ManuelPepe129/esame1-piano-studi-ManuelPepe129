@@ -94,21 +94,14 @@ function StudyPlanTableWrapper(props) {
 function StudyPlanTableActions(props) {
     const navigate = useNavigate();
 
-    // TODO: update message with which course failed
     function handleStudyPlanUpdate() {
         if (checkCredits()) {
             if (checkPropedeuticCourses()) {
                 if (checkIncompatibleCourses()) {
                     props.addStudyPlan();
                     navigate('/');
-                } else {
-                    props.updateMessage({ msg: "Some courses are not compatible", type: 'warning' });
                 }
-            } else {
-                props.updateMessage({ msg: "Missing propedeutic course", type: 'warning' });
             }
-        } else {
-            props.updateMessage({ msg: `Insert between ${props.minCredits} and ${props.maxCredits} credits`, type: 'warning' });
         }
     }
 
@@ -119,6 +112,7 @@ function StudyPlanTableActions(props) {
         if (props.currentCredits >= props.minCredits && props.currentCredits <= props.maxCredits) {
             return true;
         } else {
+            props.updateMessage({ msg: `Insert between ${props.minCredits} and ${props.maxCredits} credits`, type: 'warning' });
             return false;
         }
     }
@@ -127,6 +121,7 @@ function StudyPlanTableActions(props) {
         for (const course of props.studyPlan) {
             if (course.propedeuticcourse) {
                 if (!props.studyPlan.find(c => c.code === course.propedeuticcourse)) {
+                    props.updateMessage({ msg: `Please add propedeutic course ${course.propedeuticcourse}`, type: 'warning' });
                     return false;
                 }
             }
@@ -134,26 +129,11 @@ function StudyPlanTableActions(props) {
         return true;
     }
 
-    function calculateIncompatibilities(course) {
-        let tmp = [];
-        props.incompatibilities.forEach((element) => {
-            if (element.coursea === course.code) {
-                tmp.push(element.courseb);
-            } else if (element.courseb === course.code) {
-                tmp.push(element.coursea);
-            }
-        });
-
-        return tmp;
-    }
-
     function checkIncompatibleCourses() {
-        for (const course of props.studyPlan) {
-            const incompatibilities = calculateIncompatibilities(course);
-            for (const incompatible of incompatibilities) {
-                if (props.studyPlan.find(c => c.code === incompatible)) {
-                    return false;
-                }
+        for (const inc of props.incompatibilities) {
+            if (props.studyPlan.find(c => c.code === inc.coursea) && props.studyPlan.find(c => c.code === inc.courseb)) {
+                props.updateMessage({ msg: `Courses ${inc.coursea} and ${inc.courseb} are incompatible`, type: "warning" });
+                return false;
             }
         }
         return true;
@@ -163,7 +143,7 @@ function StudyPlanTableActions(props) {
         props.editing ?
             <>
                 <Button variant='primary' onClick={() => handleStudyPlanUpdate()}>Confirm Study Plan</Button>{' '}
-                <Button variant='warning' onClick={() => { navigate('/'); props.reset()}}>Cancel</Button>
+                <Button variant='warning' onClick={() => { navigate('/'); props.reset() }}>Cancel</Button>
             </> :
             <>
                 <Button variant='primary' onClick={() => navigate('/edit')}>Edit current study plan</Button>{' '}

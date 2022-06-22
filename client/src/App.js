@@ -33,9 +33,12 @@ function App2() {
     } else {
       setMessage({ msg: err.error, type: 'danger' });
     }
-    console.log(err);
+    // console.log(err);
   }
 
+  /*  UseEffect  */
+
+  // initial courses and incompatibilities loading
   useEffect(() => {
     Promise.all([API.getAllCourses(), API.getAllIncompatibilities()])
       .then(responses => {
@@ -46,6 +49,7 @@ function App2() {
       .catch(err => handleError(err));
   }, []);
 
+  // Check Authentication
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -54,13 +58,14 @@ function App2() {
         setLoggedIn(true);
         setUser(user);
       } catch (err) {
-        //handleError(err);
       }
     };
     checkAuth();
   }, []);
 
+  /* Handle initial loading */
   useEffect(() => {
+
     if (loggedIn && !initialLoading) {
       API.getStudyPlan()
         .then((sp) => {
@@ -80,15 +85,15 @@ function App2() {
     }
   }, [loggedIn, initialLoading, courses.length]);
 
-
-
+  // Sincronizza i corsi e il piano di studi dal server
   useEffect(() => {
+    // se devo rinfrescare i valori
     if (dirty) {
+
       // ottiene la lista di tutti i corsi
       API.getAllCourses()
         .then(courses => {
           setCourses(courses);
-
           // ottiene il piano di studi dell'utente attuale
           API.getStudyPlan()
             .then((sp) => {
@@ -105,6 +110,7 @@ function App2() {
               }
             })
             .catch(err => handleError(err));
+
           setDirty(false);
         })
         .catch(err => handleError(err));
@@ -124,7 +130,6 @@ function App2() {
     // aggiorno l'iscrizione
     await API.updateUserEnrollment(user.isFullTime)
       .then(() => {
-        //setMessage({ msg: 'Enrollment updated successfully', type: 'success' });
       }).catch(err => handleError(err));
 
     // aggiungo il nuovo piano di studi
@@ -135,6 +140,7 @@ function App2() {
       }).catch(err => handleError(err));
   }
 
+  /* Delete Study Plan */
   const deleteStudyPlan = () => {
     API.deleteStudyPlan()
       .then(() => {
@@ -143,6 +149,8 @@ function App2() {
         setMessage({ msg: 'Study plan deleted successfully', type: 'success' });
       }).catch(err => handleError(err));
   }
+
+  /* Login */
 
   const doLogin = (credentials) => {
     API.login(credentials)
@@ -157,6 +165,8 @@ function App2() {
       });
   }
 
+  /* Logout */
+
   const doLogout = async () => {
     await API.logout();
     setLoggedIn(false);
@@ -165,19 +175,19 @@ function App2() {
     setMessage({ msg: 'Log out successfully', type: 'success' });
   }
 
-  function updateStudentsEnrolled(course) {
-    setCourses(courses => courses.map(
-      c => (c.code === course.code) ? course : c));
-  }
-
   function setFullTime(fullTime) {
     const newUser = { id: user.id, username: user.email, name: user.name, isFullTime: fullTime };
     setUser(newUser);
   }
 
+  /* Update Number of Students Enrolled */
+
+  function updateStudentsEnrolled(course) {
+    setCourses(courses => courses.map(
+      c => (c.code === course.code) ? course : c));
+  }
 
   const addCourseToPlan = (course) => {
-    // setPlanTmp((oldCourses) => [...oldCourses, { code: course.code, name: course.name, credits: course.credits }]);
     setStudyPlan((oldCourses) => [...oldCourses, course]);
     const newCourse = {
       code: course.code,

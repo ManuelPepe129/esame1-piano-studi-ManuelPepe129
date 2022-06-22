@@ -4,8 +4,6 @@ import { StudyPlanOptionForm, StudyPlanTableWrapper } from './StudyPlanComponent
 import { CoursesTable } from './CourseComponents';
 import { LoginForm } from './LoginComponents';
 
-// FIXME: quando si preme su cancel si deve ricericare il pds vecchio
-
 function StudyPlanTableCard(props) {
     return (
         <Card>

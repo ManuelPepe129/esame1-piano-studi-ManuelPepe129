@@ -11,7 +11,7 @@
 ## API Server
 
 - GET `/api/sessions/current`
-  - Description: Controlla che sia avvenuto il login.
+  - Description: checks whether the user is logged in or not
   - Request body: _None_
   - Response:
     - `200 OK` (success)
@@ -136,6 +136,7 @@
 
     - `201 Created` (success)
     - `401 Unauthorized User` (user not logged in)
+    - `422 Unprocessable Entity` (values do not satisfy validators)
     - `503 Internal Server Error` (generic error)
 
   - Response body: `None`
@@ -160,6 +161,7 @@
   - Response:
     - `204 No Content` (success)
     - `401 Unauthorized User` (user not logged in)
+    - `422 Unprocessable Entity` (values do not satisfy validators)
     - `503 Service Unavailable` (generic error)
   - Response body: `None`
 
@@ -167,10 +169,18 @@
 
 ## Database Tables
 
-- Table `users` - contains (<u>id</u>, name, email password, salt, isFullTime)
-- Table `studyplans` - contains (<u>userid, course</u>)
-- Table `courses` - contains (<u>code</u>, name, credits, propedeuticcourse, maxstudentsenrolled)
-- Table `incompatibilities` - contains (<u>coursea, courseb</u>)
+- Table `users`
+  - contains <u>id</u>(key), name, email (unique), password, salt, isFullTime (0-1)
+  - stores the informations about the user, such as name, email, password hashed, salt and kind of enrollment
+- Table `studyplans` 
+  - contains <u>userid</u> (foreign key), <u>course</u> (foreign key)
+  - stores the informations about the studyplan as a list of tuples (userid, course)
+- Table `courses` 
+  - contains <u>code</u>, name, credits, propedeuticcourse, maxstudentsenrolled
+  - stores all the informations about the courses
+- Table `incompatibilities` 
+  - contains <u>coursea</u> (foreign key), <u>courseb</u> (foreign key), with coursea > courseb
+  - stores the incompatibility between two courses as a tuple (coursea, courseb)
 
 ## Main React Components
 
@@ -178,11 +188,9 @@
 - `LoginForm` (in `LoginComponents.js`): form to log in
 - `StudyPlanTable` (in `StudyPlanComponents.js`): table rendering all the courses in current study plan
 
-(only _main_ components, minor ones may be skipped)
-
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+![Screenshot](./img/screenshot.png)
 
 ## Users Credentials
 
@@ -191,5 +199,3 @@
 - username: `andrea.neri@polito.it`, password: `4ndr34n3r1`. Full-time student
 - username: `mario.rossi@polito.it`, password: `m4r10r0ss1`. Part-time student
 - username: `paola.verdi@polito.it`, password: `hwrg27@!`. Full-time student
-
-- username, password (plus any other requested info)
